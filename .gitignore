@@ -1,0 +1,79 @@
+# macOS
+.DS_Store
+._*
+.AppleDouble
+.LSOverride
+
+# Python / Django
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+*.egg
+pip-log.txt
+pip-delete-this-directory.txt
+*.manifest
+*.spec
+
+# Django artifacts
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+media/
+
+# Virtual environments / env files
+.env
+!.env.sample
+.venv/
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+.env.local
+.env.*.local
+.envrc
+.devcontainer/.env
+
+# devcontainer local envs (keep sample)
+!.devcontainer/.env.sample
+.devcontainer/*.local
+
+# pyenv
+.python-version
+
+# Docker compose overrides
+docker-compose.override.yml
+docker-compose.*.override.yml
+
+# caches / alternative package dirs
+.cache/
+__pypackages__/
+
+# Test / coverage / tooling caches
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.mypy_cache/
+.pyre/
+.pytype/
+.ruff_cache/
+
+# VS Code — ignore workspace storage/history but keep shared settings
+.vscode/.history/
+.vscode/*.local
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+!.vscode/*.code-snippets
+
+# JetBrains
+.idea/
+*.iml

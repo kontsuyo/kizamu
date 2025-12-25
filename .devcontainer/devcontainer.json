@@ -1,0 +1,38 @@
+{
+  "name": "KIZAMU",
+  "dockerComposeFile": "compose.yml",
+  "service": "backend",
+  "workspaceFolder": "/home/user1/dev",
+  "remoteUser": "user1",
+  "forwardPorts": [8000, 5432],
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-ossdata.vscode-postgresql",
+        "ms-python.black-formatter",
+        "ms-python.flake8",
+        "ms-python.isort",
+        "ms-python.mypy-type-checker",
+        "ms-python.pylint",
+        "ms-python.vscode-pylance",
+        "magicstack.MagicPython",
+        "njpwerner.autodocstring",
+        "oderwat.indent-rainbow",
+        "christian-kohler.path-intellisense",
+        "littlefoxteam.vscode-python-test-adapter",
+        "humao.rest-client",
+        "shardulm94.trailing-spaces",
+        "rangav.vscode-thunder-client",
+        "styled-components.vscode-styled-components",
+        "ms-python.debugpy",
+        "streetsidesoftware.code-spell-checker",
+        "batisteo.vscode-django",
+        "charliermarsh.ruff"
+      ],
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "bash"
+      }
+    }
+  }
+}
