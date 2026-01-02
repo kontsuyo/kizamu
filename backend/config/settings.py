@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
+    "accounts",
 ]
 
 MIDDLEWARE = [
@@ -128,6 +129,8 @@ MEDIA_ROOT = BASE_DIR / "media"  # 画像などのメディアファイルの保
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+AUTH_USER_MODEL = "accounts.CustomUser"
 
 # ログディレクトリの作成
 log_dir = BASE_DIR / "log"
