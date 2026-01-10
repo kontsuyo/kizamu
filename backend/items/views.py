@@ -1,6 +1,7 @@
 from rest_framework import generics, permissions
 
 from items.models import BootItem
+from items.permissions import IsOwnerOrReadOnly
 from items.serializers import BootItemSerializer
 
 
@@ -16,4 +17,7 @@ class BootItemList(generics.ListCreateAPIView):
 class BootItemDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = BootItem.objects.all()
     serializer_class = BootItemSerializer
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+    permission_classes = (
+        permissions.IsAuthenticatedOrReadOnly,
+        IsOwnerOrReadOnly,
+    )
