@@ -3,5 +3,4 @@ load-plugins=pylint_django
 django-settings-module=config.settings
 
 [MESSAGES CONTROL]
-# もしそれでもうるさい特定の警告があればここで消せますが、
-# 上記プラグインだけで BootItem.objects は解決するはずです。
+disable=redefined-outer-name
