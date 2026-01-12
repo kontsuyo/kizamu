@@ -4,11 +4,16 @@ from accounts.models import CustomUser
 from items.models import BootItem
 
 
-class CustomUserSerializer(serializers.ModelSerializer):
+class CustomUserSerializer(serializers.HyperlinkedModelSerializer):
     boot_items = serializers.PrimaryKeyRelatedField(
         many=True, queryset=BootItem.objects.all()
     )
 
     class Meta:
         model = CustomUser
-        fields = ["id", "username", "boot_items"]
+        fields = [
+            "url",
+            "id",
+            "username",
+            "boot_items",
+        ]

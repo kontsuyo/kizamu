@@ -7,7 +7,7 @@ from items.models import BootItem
 
 @pytest.mark.django_db
 class TestBootItemAPI:
-    URL = reverse("boot-list")
+    URL = reverse("bootitem-list")
 
     def test_create_boot_item_happy_path(self, auth_client, test_user):
         """
@@ -52,7 +52,7 @@ def test_update_boot_item_by_non_owner_fails(other_auth_client, test_user):
     boot = BootItem.objects.create(
         user=test_user, brand="Red Wing", model="875", leather="Oro"
     )
-    url = reverse("boot-detail", kwargs={"pk": boot.pk})
+    url = reverse("bootitem-detail", kwargs={"pk": boot.pk})
 
     data = {"brand": "Hack Brand"}
     response = other_auth_client.put(url, data)

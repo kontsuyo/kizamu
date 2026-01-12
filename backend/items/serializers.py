@@ -3,9 +3,17 @@ from rest_framework import serializers
 from items.models import BootItem
 
 
-class BootItemSerializer(serializers.ModelSerializer):
+class BootItemSerializer(serializers.HyperlinkedModelSerializer):
     user = serializers.ReadOnlyField(source="user.username")
 
     class Meta:
         model = BootItem
-        fields = ["id", "user", "brand", "model", "leather", "created_at"]
+        fields = [
+            "url",
+            "id",
+            "user",
+            "brand",
+            "model",
+            "leather",
+            "created_at",
+        ]
