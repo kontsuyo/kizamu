@@ -4,7 +4,7 @@ from accounts.models import CustomUser
 from items.models import BootItem
 
 
-class CustomUserSerializer(serializers.HyperlinkedModelSerializer):
+class CustomUserSerializer(serializers.ModelSerializer):
     boot_items = serializers.PrimaryKeyRelatedField(
         many=True, queryset=BootItem.objects.all()
     )
