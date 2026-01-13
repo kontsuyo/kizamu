@@ -91,3 +91,17 @@ def test_boot_item_detail_contains_logs(auth_client, test_user):
     assert response.status_code == status.HTTP_200_OK
     assert len(response.data["logs"]) == 2
     assert response.data["logs"][0]["note"] == "ログ1"
+
+
+@pytest.mark.django_db
+def test_create_log_returns_parent_boot_item(auth_client, test_user):
+    boot = BootItem.objects.create(user=test_user, brand="Red Wing", model="875")
+    url = reverse("bootlog-list")
+
+    data = {"boot_item": boot.id, "note": "メンテナンス完了"}
+    response = auth_client.post(url, data)
+
+    assert response.status_code == status.HTTP_201_CREATED
+    # レスポンスのトップレベルに "logs" が含まれている（＝BootItemのデータが返っている）か確認
+    assert "logs" in response.data
+    assert response.data["logs"][0]["note"] == "メンテナンス完了"
