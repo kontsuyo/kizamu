@@ -4,6 +4,7 @@ from config import settings
 
 
 class BootItem(models.Model):
+    id: int
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
@@ -19,3 +20,19 @@ class BootItem(models.Model):
 
     def __str__(self):
         return f"{self.brand} {self.model}"
+
+
+class BootLog(models.Model):
+    id: int
+    boot_item = models.ForeignKey(
+        BootItem,
+        on_delete=models.CASCADE,
+        related_name="logs",
+    )
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    image = models.ImageField(upload_to="boot_logs/")
+    note = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Log for {self.boot_item} at {self.created_at}"

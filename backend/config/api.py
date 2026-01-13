@@ -8,7 +8,7 @@ def api_root(request, format_=None, **kwargs):
     fmt = format_ if format_ is not None else kwargs.get("format")
     return Response(
         {
-            "users": reverse("user-list", request=request, format=fmt),
-            "boots": reverse("boot-list", request=request, format=fmt),
+            "users": reverse("customuser-list", request=request, format=fmt),
+            "boots": reverse("bootitem-list", request=request, format=fmt),
         }
     )

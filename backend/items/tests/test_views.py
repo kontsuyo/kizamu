@@ -2,7 +2,7 @@ import pytest
 from django.urls import reverse
 from rest_framework import status
 
-from items.models import BootItem
+from items.models import BootItem, BootLog
 
 
 @pytest.mark.django_db
@@ -60,3 +60,34 @@ def test_update_boot_item_by_non_owner_fails(other_auth_client, test_user):
     assert response.status_code == status.HTTP_403_FORBIDDEN
     boot.refresh_from_db()
     assert boot.brand == "Red Wing"
+
+
+@pytest.mark.django_db
+def test_create_boot_log_happy_path(auth_client, test_user):
+    """【ハッピーパス】特定のブーツに対してログを投稿できるか"""
+    boot = BootItem.objects.create(user=test_user, brand="Red Wing", model="875")
+    url = reverse("bootlog-list")
+
+    data = {"boot_item": boot.id, "note": "今日はオイルアップをしました。"}
+    response = auth_client.post(url, data)
+
+    assert response.status_code == status.HTTP_201_CREATED
+    assert response.data["note"] == "今日はオイルアップをしました。"
+    assert response.data["boot_item"] == boot.id
+
+
+@pytest.mark.django_db
+def test_boot_item_detail_contains_logs(auth_client, test_user):
+    """【ハッピーパス】ブーツ詳細APIに紐づくログが含まれているか"""
+    boot = BootItem.objects.create(user=test_user, brand="Red Wing", model="875")
+    BootLog.objects.create(boot_item=boot, user=test_user, note="ログ1")
+    BootLog.objects.create(boot_item=boot, user=test_user, note="ログ2")
+
+    url = reverse("bootitem-detail", kwargs={"pk": boot.pk})
+
+    response = auth_client.get(url)
+    print(response.data)
+
+    assert response.status_code == status.HTTP_200_OK
+    assert len(response.data["logs"]) == 2
+    assert response.data["logs"][0]["note"] == "ログ1"
