@@ -129,7 +129,16 @@ MEDIA_URL = "media/"  # メディアファイルのURL
 MEDIA_ROOT = BASE_DIR / "media"  # 画像などのメディアファイルの保存先
 
 # 画像ファイルの保存先を Cloudinary に切り替える
-DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
+# DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
+STORAGES = {
+    "default": {
+        "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+    },
+}
+
 CLOUDINARY_STORAGE = {
     "CLOUD_NAME": env("CLOUD_NAME"),
     "API_KEY": env("API_KEY"),

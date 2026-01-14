@@ -107,6 +107,7 @@ def test_create_log_returns_parent_boot_item(auth_client, test_user):
     assert response.data["logs"][0]["note"] == "メンテナンス完了"
 
 
+# from django.core.files.uploadedfile import SimpleUploadedFile
 # @pytest.mark.django_db
 # def test_create_boot_log_actual_upload(auth_client, test_user):
 #     """【実地テスト】実際に Cloudinary へアップロードできるか"""
