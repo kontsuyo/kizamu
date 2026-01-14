@@ -105,3 +105,31 @@ def test_create_log_returns_parent_boot_item(auth_client, test_user):
     # レスポンスのトップレベルに "logs" が含まれている（＝BootItemのデータが返っている）か確認
     assert "logs" in response.data
     assert response.data["logs"][0]["note"] == "メンテナンス完了"
+
+
+# @pytest.mark.django_db
+# def test_create_boot_log_actual_upload(auth_client, test_user):
+#     """【実地テスト】実際に Cloudinary へアップロードできるか"""
+
+#     boot = BootItem.objects.create(user=test_user, brand="Red Wing", model="9060")
+#     url = reverse("bootlog-list")
+
+#     small_gif = (
+#         b"\x47\x49\x46\x38\x39\x61\x01\x00\x01\x00\x00\x00\x00\x21\xf9"
+#         b"\x04\x01\x0a\x00\x01\x00\x2c\x00\x00\x00\x00\x01\x00\x01\x00"
+#         b"\x00\x02\x02\x4c\x01\x00\x3b"
+#     )
+#     image_file = SimpleUploadedFile(
+#         "real_test_image.gif", small_gif, content_type="image/gif"
+#     )
+
+#     data = {
+#         "boot_item": boot.id,
+#         "note": "Cloudinaryアップロードテスト",
+#         "image": image_file,
+#     }
+#     response = auth_client.post(url, data, format="multipart")
+
+#     assert response.status_code == status.HTTP_201_CREATED
+#     assert "cloudinary.com" in response.data["logs"][0]["image"]
+#     print(f"\nUploaded Image URL: {response.data['logs'][0]['image']}")

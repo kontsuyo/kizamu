@@ -8,7 +8,7 @@ class BootLogSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = BootLog
-        fields = ["id", "boot_item", "user", "note", "created_at"]
+        fields = ["id", "boot_item", "user", "image", "note", "created_at"]
 
 
 class BootItemSerializer(serializers.ModelSerializer):

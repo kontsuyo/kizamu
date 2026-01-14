@@ -32,12 +32,14 @@ ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")
 # Application definition
 
 INSTALLED_APPS = [
+    "cloudinary_storage",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "cloudinary",
     "rest_framework",
     "accounts",
     "items",
@@ -125,6 +127,15 @@ USE_TZ = True
 STATIC_URL = "static/"
 MEDIA_URL = "media/"  # メディアファイルのURL
 MEDIA_ROOT = BASE_DIR / "media"  # 画像などのメディアファイルの保存先
+
+# 画像ファイルの保存先を Cloudinary に切り替える
+DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
+CLOUDINARY_STORAGE = {
+    "CLOUD_NAME": env("CLOUD_NAME"),
+    "API_KEY": env("API_KEY"),
+    "API_SECRET": env("API_SECRET"),
+}
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
