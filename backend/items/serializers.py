@@ -1,3 +1,4 @@
+import cloudinary
 from rest_framework import serializers
 
 from items.models import BootItem, BootLog
@@ -5,10 +6,41 @@ from items.models import BootItem, BootLog
 
 class BootLogSerializer(serializers.ModelSerializer):
     user = serializers.ReadOnlyField(source="user.username")
+    image = serializers.ImageField(required=False, allow_null=True)
 
     class Meta:
         model = BootLog
         fields = ["id", "boot_item", "user", "image", "note", "created_at"]
+
+    def get_image(self, obj):
+        if not obj.image:
+            return None
+
+        # obj.image が CloudinaryResource オブジェクトであることを利用して URL を取得
+        try:
+            return obj.image.url
+        except Exception:  # pylint: disable=broad-exception-caught
+            # 万が一設定が漏れていてもエラーで止まらないようにする
+            return None
+
+    def to_representation(self, instance):
+        ret = super().to_representation(instance)
+        # instance.image が存在する場合、Cloudinary の URL に差し替える
+        if instance.image:
+            # Cloudinaryのリサイズ用URLを手動で組み立てる
+            # instance.image.public_id は保存された画像のID（例: boot_logs/lvs4...）
+            url = cloudinary.utils.cloudinary_url(
+                instance.image.public_id,
+                width=800,
+                height=800,
+                crop="limit",
+                quality="auto",
+                fetch_format="auto",
+                secure=True,
+            )[0]  # [0]にURLが入っています
+
+            ret["image"] = url
+        return ret
 
 
 class BootItemSerializer(serializers.ModelSerializer):

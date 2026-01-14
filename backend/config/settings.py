@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 
+import cloudinary
 import environ
 
 env = environ.Env(DEBUG=(bool, False))
@@ -129,7 +130,6 @@ MEDIA_URL = "media/"  # メディアファイルのURL
 MEDIA_ROOT = BASE_DIR / "media"  # 画像などのメディアファイルの保存先
 
 # 画像ファイルの保存先を Cloudinary に切り替える
-# DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
 STORAGES = {
     "default": {
         "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
@@ -144,6 +144,13 @@ CLOUDINARY_STORAGE = {
     "API_KEY": env("API_KEY"),
     "API_SECRET": env("API_SECRET"),
 }
+
+cloudinary.config(
+    cloud_name=CLOUDINARY_STORAGE["CLOUD_NAME"],
+    api_key=CLOUDINARY_STORAGE["API_KEY"],
+    api_secret=CLOUDINARY_STORAGE["API_SECRET"],
+    secure=True,
+)
 
 
 # Default primary key field type

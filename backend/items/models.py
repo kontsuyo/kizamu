@@ -1,3 +1,4 @@
+from cloudinary.models import CloudinaryField  # 追加
 from django.db import models
 
 from config import settings
@@ -30,7 +31,12 @@ class BootLog(models.Model):
         related_name="logs",
     )
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    image = models.ImageField(upload_to="boot_logs/", blank=True, null=True)
+    image = CloudinaryField(
+        "image",
+        folder="boot_logs/",
+        blank=True,
+        null=True,
+    )
     note = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
