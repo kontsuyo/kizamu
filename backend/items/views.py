@@ -40,3 +40,12 @@ class BootLogList(generics.ListCreateAPIView):
             serializer = BootItemSerializer(boot_item, context={"request": request})
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return response
+
+
+class BootLogDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = BootLog.objects.all()
+    serializer_class = BootLogSerializer
+    permission_classes = (
+        permissions.IsAuthenticatedOrReadOnly,
+        IsOwnerOrReadOnly,
+    )
