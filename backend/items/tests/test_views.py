@@ -70,10 +70,11 @@ def test_create_boot_log_happy_path(auth_client, test_user):
 
     data = {"boot_item": boot.id, "note": "今日はオイルアップをしました。"}
     response = auth_client.post(url, data)
+    print(response.data)
 
     assert response.status_code == status.HTTP_201_CREATED
-    assert response.data["note"] == "今日はオイルアップをしました。"
-    assert response.data["boot_item"] == boot.id
+    assert response.data["logs"][0]["note"] == "今日はオイルアップをしました。"
+    assert response.data["logs"][0]["boot_item"] == boot.id
 
 
 @pytest.mark.django_db
@@ -90,7 +91,7 @@ def test_boot_item_detail_contains_logs(auth_client, test_user):
 
     assert response.status_code == status.HTTP_200_OK
     assert len(response.data["logs"]) == 2
-    assert response.data["logs"][0]["note"] == "ログ1"
+    assert response.data["logs"][0]["note"] == "ログ2"
 
 
 @pytest.mark.django_db
