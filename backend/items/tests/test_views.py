@@ -2,12 +2,12 @@ import pytest
 from django.urls import reverse
 from rest_framework import status
 
-from items.models import BootItem, BootLog
+from items.models import Item, ItemLog
 
 
 @pytest.mark.django_db
 class TestBootItemAPI:
-    URL = reverse("bootitem-list")
+    URL = reverse("item-list")
 
     def test_create_boot_item_happy_path(self, auth_client, test_user):
         """
@@ -27,7 +27,7 @@ class TestBootItemAPI:
         assert response.data["brand"] == "Red Wing"
 
         # 3. perform_createの検証 (userが自動セットされているか)
-        boot = BootItem.objects.get(id=response.data["id"])
+        boot = Item.objects.get(id=response.data["id"])
         assert boot.user == test_user
 
     def test_list_boot_items_happy_path(self, api_client, test_user):
@@ -36,7 +36,7 @@ class TestBootItemAPI:
         全ユーザー（未ログイン含む）がブーツ一覧を取得できること
         """
         # 事前にデータを作成しておく
-        BootItem.objects.create(
+        Item.objects.create(
             user=test_user, brand="Alden", model="Indy", leather="Chromexcel"
         )
 
@@ -49,10 +49,10 @@ class TestBootItemAPI:
 
 @pytest.mark.django_db
 def test_update_boot_item_by_non_owner_fails(other_auth_client, test_user):
-    boot = BootItem.objects.create(
+    boot = Item.objects.create(
         user=test_user, brand="Red Wing", model="875", leather="Oro"
     )
-    url = reverse("bootitem-detail", kwargs={"pk": boot.pk})
+    url = reverse("item-detail", kwargs={"pk": boot.pk})
 
     data = {"brand": "Hack Brand"}
     response = other_auth_client.put(url, data)
@@ -65,8 +65,8 @@ def test_update_boot_item_by_non_owner_fails(other_auth_client, test_user):
 @pytest.mark.django_db
 def test_create_boot_log_happy_path(auth_client, test_user):
     """【ハッピーパス】特定のブーツに対してログを投稿できるか"""
-    boot = BootItem.objects.create(user=test_user, brand="Red Wing", model="875")
-    url = reverse("bootlog-list")
+    boot = Item.objects.create(user=test_user, brand="Red Wing", model="875")
+    url = reverse("itemlog-list")
 
     data = {"boot_item": boot.id, "note": "今日はオイルアップをしました。"}
     response = auth_client.post(url, data)
@@ -80,11 +80,11 @@ def test_create_boot_log_happy_path(auth_client, test_user):
 @pytest.mark.django_db
 def test_boot_item_detail_contains_logs(auth_client, test_user):
     """【ハッピーパス】ブーツ詳細APIに紐づくログが含まれているか"""
-    boot = BootItem.objects.create(user=test_user, brand="Red Wing", model="875")
-    BootLog.objects.create(boot_item=boot, user=test_user, note="ログ1")
-    BootLog.objects.create(boot_item=boot, user=test_user, note="ログ2")
+    boot = Item.objects.create(user=test_user, brand="Red Wing", model="875")
+    ItemLog.objects.create(boot_item=boot, user=test_user, note="ログ1")
+    ItemLog.objects.create(boot_item=boot, user=test_user, note="ログ2")
 
-    url = reverse("bootitem-detail", kwargs={"pk": boot.pk})
+    url = reverse("item-detail", kwargs={"pk": boot.pk})
 
     response = auth_client.get(url)
     print(response.data)
@@ -96,8 +96,8 @@ def test_boot_item_detail_contains_logs(auth_client, test_user):
 
 @pytest.mark.django_db
 def test_create_log_returns_parent_boot_item(auth_client, test_user):
-    boot = BootItem.objects.create(user=test_user, brand="Red Wing", model="875")
-    url = reverse("bootlog-list")
+    boot = Item.objects.create(user=test_user, brand="Red Wing", model="875")
+    url = reverse("itemlog-list")
 
     data = {"boot_item": boot.id, "note": "メンテナンス完了"}
     response = auth_client.post(url, data)
@@ -114,7 +114,7 @@ def test_create_log_returns_parent_boot_item(auth_client, test_user):
 #     """【実地テスト】実際に Cloudinary へアップロードできるか"""
 
 #     boot = BootItem.objects.create(user=test_user, brand="Red Wing", model="9060")
-#     url = reverse("bootlog-list")
+#     url = reverse("itemlog-list")
 
 #     small_gif = (
 #         b"\x47\x49\x46\x38\x39\x61\x01\x00\x01\x00\x00\x00\x00\x21\xf9"

@@ -1,32 +1,32 @@
 from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 
-from items.models import BootItem, BootLog
+from items.models import Item, ItemLog
 from items.permissions import IsOwnerOrReadOnly
-from items.serializers import BootItemSerializer, BootLogSerializer
+from items.serializers import ItemLogSerializer, ItemSerializer
 
 
-class BootItemList(generics.ListCreateAPIView):
-    queryset = BootItem.objects.all()
-    serializer_class = BootItemSerializer
+class ItemList(generics.ListCreateAPIView):
+    queryset = Item.objects.all()
+    serializer_class = ItemSerializer
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
 
-class BootItemDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = BootItem.objects.all()
-    serializer_class = BootItemSerializer
+class ItemDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Item.objects.all()
+    serializer_class = ItemSerializer
     permission_classes = (
         permissions.IsAuthenticatedOrReadOnly,
         IsOwnerOrReadOnly,
     )
 
 
-class BootLogList(generics.ListCreateAPIView):
-    queryset = BootLog.objects.all()
-    serializer_class = BootLogSerializer
+class ItemLogList(generics.ListCreateAPIView):
+    queryset = ItemLog.objects.all()
+    serializer_class = ItemLogSerializer
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
     def perform_create(self, serializer):
@@ -36,15 +36,15 @@ class BootLogList(generics.ListCreateAPIView):
         "フロントエンドでURLを組み立てなくて済むようにするため"
         response = super().create(request, *args, **kwargs)
         if response.status_code == status.HTTP_201_CREATED:
-            boot_item = BootItem.objects.get(pk=request.data["boot_item"])
-            serializer = BootItemSerializer(boot_item, context={"request": request})
+            boot_item = Item.objects.get(pk=request.data["boot_item"])
+            serializer = ItemSerializer(boot_item, context={"request": request})
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return response
 
 
-class BootLogDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = BootLog.objects.all()
-    serializer_class = BootLogSerializer
+class ItemLogDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = ItemLog.objects.all()
+    serializer_class = ItemLogSerializer
     permission_classes = (
         permissions.IsAuthenticatedOrReadOnly,
         IsOwnerOrReadOnly,

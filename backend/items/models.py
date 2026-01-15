@@ -4,7 +4,7 @@ from django.db import models
 from config import settings
 
 
-class BootItem(models.Model):
+class Item(models.Model):
     id: int
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -23,10 +23,10 @@ class BootItem(models.Model):
         return f"{self.brand} {self.model}"
 
 
-class BootLog(models.Model):
+class ItemLog(models.Model):
     id: int
     boot_item = models.ForeignKey(
-        BootItem,
+        Item,
         on_delete=models.CASCADE,
         related_name="logs",
     )

@@ -1,15 +1,15 @@
 import cloudinary
 from rest_framework import serializers
 
-from items.models import BootItem, BootLog
+from items.models import Item, ItemLog
 
 
-class BootLogSerializer(serializers.ModelSerializer):
+class ItemLogSerializer(serializers.ModelSerializer):
     user = serializers.ReadOnlyField(source="user.username")
     image = serializers.ImageField(required=False, allow_null=True)
 
     class Meta:
-        model = BootLog
+        model = ItemLog
         fields = ["id", "boot_item", "user", "image", "note", "created_at"]
 
     def get_image(self, obj):
@@ -43,10 +43,10 @@ class BootLogSerializer(serializers.ModelSerializer):
         return ret
 
 
-class BootItemSerializer(serializers.ModelSerializer):
+class ItemSerializer(serializers.ModelSerializer):
     user = serializers.ReadOnlyField(source="user.username")
-    logs = BootLogSerializer(many=True, read_only=True)
+    logs = ItemLogSerializer(many=True, read_only=True)
 
     class Meta:
-        model = BootItem
+        model = Item
         fields = ["id", "user", "brand", "model", "leather", "created_at", "logs"]

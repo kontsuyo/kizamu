@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from items.models import BootItem, BootLog
+from items.models import Item, ItemLog
 
-admin.site.register(BootItem)
-admin.site.register(BootLog)
+admin.site.register(Item)
+admin.site.register(ItemLog)
