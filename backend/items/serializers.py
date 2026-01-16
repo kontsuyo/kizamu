@@ -49,4 +49,13 @@ class ItemSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Item
-        fields = ["id", "user", "brand", "model", "leather", "created_at", "logs"]
+        fields = [
+            "id",
+            "user",
+            "_type",
+            "brand",
+            "model",
+            "leather",
+            "created_at",
+            "logs",
+        ]

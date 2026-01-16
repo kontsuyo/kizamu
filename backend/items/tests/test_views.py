@@ -16,7 +16,12 @@ class TestBootItemAPI:
         1. 201 Createdが返ること
         2. DBに保存されたデータのuserが実行ユーザーと一致すること
         """
-        data = {"brand": "Red Wing", "model": "875", "leather": "Oro Legacy"}
+        data = {
+            "_type": "Boot",
+            "brand": "Red Wing",
+            "model": "875",
+            "leather": "Oro Legacy",
+        }
 
         response = auth_client.post(self.URL, data, format="json")
 

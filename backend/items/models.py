@@ -6,11 +6,13 @@ from config import settings
 
 class Item(models.Model):
     id: int
+    Type = models.TextChoices("ItemType", "Boot")
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name="boot_items",
     )
+    _type = models.CharField(choices=Type.choices, max_length=10)
     brand = models.CharField(max_length=100)
     model = models.CharField(max_length=100)
     leather = models.CharField(max_length=100)
