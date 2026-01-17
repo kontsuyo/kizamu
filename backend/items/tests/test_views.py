@@ -2,7 +2,7 @@ import pytest
 from django.urls import reverse
 from rest_framework import status
 
-from items.models import Item, PhotoLog
+from items.models import Item, Photo
 
 
 @pytest.mark.django_db
@@ -86,8 +86,8 @@ def test_create_boot_log_happy_path(auth_client, test_user):
 def test_boot_item_detail_contains_logs(auth_client, test_user):
     """【ハッピーパス】ブーツ詳細APIに紐づくログが含まれているか"""
     boot = Item.objects.create(user=test_user, brand="Red Wing", model="875")
-    PhotoLog.objects.create(boot_item=boot, user=test_user, note="ログ1")
-    PhotoLog.objects.create(boot_item=boot, user=test_user, note="ログ2")
+    Photo.objects.create(boot_item=boot, user=test_user, note="ログ1")
+    Photo.objects.create(boot_item=boot, user=test_user, note="ログ2")
 
     url = reverse("item-detail", kwargs={"pk": boot.pk})
 

@@ -1,12 +1,12 @@
 from django.contrib.auth import get_user_model
 from rest_framework import generics, permissions
 
-from items.models import Item, PhotoLog
+from items.models import Item, Photo
 from items.permissions import IsOwnerOrReadOnly
 from items.serializers import (
     ItemCreateSerializer,
     ItemDetailSerializer,
-    PhotoLogDetailSerializer,
+    PhotoDetailSerializer,
     ProfileSerializer,
 )
 
@@ -33,8 +33,8 @@ from items.serializers import (
 #         return response
 
 
-class PhotoLogDetail(generics.RetrieveUpdateDestroyAPIView):
-    serializer_class = PhotoLogDetailSerializer
+class PhotoDetail(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = PhotoDetailSerializer
     permission_classes = (
         permissions.AllowAny,
         IsOwnerOrReadOnly,
@@ -42,7 +42,7 @@ class PhotoLogDetail(generics.RetrieveUpdateDestroyAPIView):
 
     def get_queryset(self):
         pk = self.kwargs.get("pk")
-        return PhotoLog.objects.filter(pk=pk)
+        return Photo.objects.filter(pk=pk)
 
 
 class Profile(generics.ListAPIView):

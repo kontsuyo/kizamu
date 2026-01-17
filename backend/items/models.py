@@ -25,7 +25,7 @@ class Item(models.Model):
         return f"{self.brand} {self.model}"
 
 
-class PhotoLog(models.Model):
+class Photo(models.Model):
     id: int
     item = models.ForeignKey(
         Item,
