@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from rest_framework import generics, permissions
 
-from items.models import Item, ItemLog
+from items.models import Item, Photo
 from items.permissions import IsOwnerOrReadOnly
 from items.serializers import (
     ItemCreateSerializer,
@@ -39,7 +39,7 @@ class PhotoDetail(generics.RetrieveAPIView):
 
     def get_queryset(self):
         pk = self.kwargs.get("pk")
-        return ItemLog.objects.filter(pk=pk)
+        return Photo.objects.filter(pk=pk)
 
 
 class Profile(generics.ListAPIView):
