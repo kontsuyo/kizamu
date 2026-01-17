@@ -33,7 +33,7 @@ from items.serializers import (
 #         return response
 
 
-class ItemLogDetail(generics.RetrieveAPIView):
+class PhotoDetail(generics.RetrieveAPIView):
     serializer_class = ItemLogSerializer
     permission_classes = (permissions.AllowAny,)
 
@@ -42,7 +42,7 @@ class ItemLogDetail(generics.RetrieveAPIView):
         return ItemLog.objects.filter(pk=pk)
 
 
-class ItemList(generics.ListAPIView):
+class Profile(generics.ListAPIView):
     serializer_class = ItemListSerializer
     permission_classes = (permissions.AllowAny,)
 
