@@ -3,6 +3,7 @@ from rest_framework import generics, permissions
 
 from items.models import Item, ItemLog
 from items.serializers import (
+    ItemCreateSerializer,
     ItemDetailSerializer,
     ItemListSerializer,
     ItemLogSerializer,
@@ -56,3 +57,11 @@ class ItemDetail(generics.RetrieveAPIView):
     def get_queryset(self):
         pk = self.kwargs.get("pk")
         return Item.objects.filter(pk=pk)
+
+
+class ItemCreate(generics.CreateAPIView):
+    serializer_class = ItemCreateSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)

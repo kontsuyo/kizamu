@@ -56,3 +56,11 @@ class ItemListSerializer(serializers.ModelSerializer):
     class Meta:
         model = get_user_model()
         fields = ["id", "username", "items"]
+
+
+class ItemCreateSerializer(serializers.ModelSerializer):
+    user = serializers.ReadOnlyField(source="user.username")
+
+    class Meta:
+        model = Item
+        fields = ["user", "_type", "brand", "model", "leather"]

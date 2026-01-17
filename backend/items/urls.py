@@ -15,6 +15,7 @@ urlpatterns = [
         views.ItemLogDetail.as_view(),
         name="itemlog-detail",
     ),
+    path("items/create/", views.ItemCreate.as_view(), name="item-create"),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

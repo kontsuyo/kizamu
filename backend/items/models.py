@@ -6,7 +6,7 @@ from config import settings
 
 class Item(models.Model):
     id: int
-    Type = models.TextChoices("ItemType", "Boot")
+    Type = models.TextChoices("ItemType", "Footwear")
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
