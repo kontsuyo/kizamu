@@ -9,6 +9,6 @@ def api_root(request, format_=None, **kwargs):
     return Response(
         {
             "users": reverse("customuser-list", request=request, format=fmt),
-            "boots": reverse("bootitem-list", request=request, format=fmt),
+            "boots": reverse("item-list", request=request, format=fmt),
         }
     )

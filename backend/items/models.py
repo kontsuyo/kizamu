@@ -10,7 +10,7 @@ class Item(models.Model):
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
-        related_name="boot_items",
+        related_name="items",
     )
     _type = models.CharField(choices=Type.choices, max_length=10)
     brand = models.CharField(max_length=100)
@@ -27,7 +27,7 @@ class Item(models.Model):
 
 class ItemLog(models.Model):
     id: int
-    boot_item = models.ForeignKey(
+    item = models.ForeignKey(
         Item,
         on_delete=models.CASCADE,
         related_name="logs",
@@ -35,7 +35,7 @@ class ItemLog(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     image = CloudinaryField(
         "image",
-        folder="boot_logs/",
+        folder="item_logs/",
         blank=True,
         null=True,
     )
@@ -46,4 +46,4 @@ class ItemLog(models.Model):
         ordering = ["-created_at"]
 
     def __str__(self):
-        return f"Log for {self.boot_item} at {self.created_at}"
+        return f"Log for {self.item} at {self.created_at}"

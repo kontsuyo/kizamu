@@ -1,9 +1,10 @@
+from django.contrib.auth import get_user_model
 from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 
 from items.models import Item, ItemLog
 from items.permissions import IsOwnerOrReadOnly
-from items.serializers import ItemLogSerializer, ItemSerializer
+from items.serializers import ItemLogSerializer, ItemSerializer, UserProfileSerializer
 
 
 class ItemList(generics.ListCreateAPIView):
@@ -36,8 +37,8 @@ class ItemLogList(generics.ListCreateAPIView):
         "フロントエンドでURLを組み立てなくて済むようにするため"
         response = super().create(request, *args, **kwargs)
         if response.status_code == status.HTTP_201_CREATED:
-            boot_item = Item.objects.get(pk=request.data["boot_item"])
-            serializer = ItemSerializer(boot_item, context={"request": request})
+            item = Item.objects.get(pk=request.data["item"])
+            serializer = ItemSerializer(item, context={"request": request})
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return response
 
@@ -49,3 +50,19 @@ class ItemLogDetail(generics.RetrieveUpdateDestroyAPIView):
         permissions.IsAuthenticatedOrReadOnly,
         IsOwnerOrReadOnly,
     )
+
+
+class UserProfileView(generics.ListAPIView):
+    queryset = ItemLog.objects.all()
+    serializer_class = UserProfileSerializer
+    permission_classes = (permissions.AllowAny,)
+
+    def get_queryset(self):
+        username = self.kwargs.get("username")
+        User = get_user_model()
+
+        try:
+            user = User.objects.get(username=username)
+            return ItemLog.objects.filter(user=user)
+        except User.DoesNotExist:
+            return ItemLog.objects.none()
