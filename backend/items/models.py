@@ -36,8 +36,8 @@ class ItemLog(models.Model):
     image = CloudinaryField(
         "image",
         folder="item_logs/",
-        blank=True,
-        null=True,
+        blank=False,
+        null=False,
     )
     note = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)

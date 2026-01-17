@@ -1,4 +1,5 @@
 import cloudinary
+from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
 from items.models import Item, ItemLog
@@ -6,22 +7,11 @@ from items.models import Item, ItemLog
 
 class ItemLogSerializer(serializers.ModelSerializer):
     user = serializers.ReadOnlyField(source="user.username")
-    image = serializers.ImageField(required=False, allow_null=True)
+    image = serializers.ImageField(required=True, allow_null=False)
 
     class Meta:
         model = ItemLog
         fields = ["id", "item", "user", "image", "note", "created_at"]
-
-    def get_image(self, obj):
-        if not obj.image:
-            return None
-
-        # obj.image が CloudinaryResource オブジェクトであることを利用して URL を取得
-        try:
-            return obj.image.url
-        except Exception:  # pylint: disable=broad-exception-caught
-            # 万が一設定が漏れていてもエラーで止まらないようにする
-            return None
 
     def to_representation(self, instance):
         ret = super().to_representation(instance)
@@ -43,7 +33,7 @@ class ItemLogSerializer(serializers.ModelSerializer):
         return ret
 
 
-class ItemSerializer(serializers.ModelSerializer):
+class ItemDetailSerializer(serializers.ModelSerializer):
     user = serializers.ReadOnlyField(source="user.username")
     logs = ItemLogSerializer(many=True, read_only=True)
 
@@ -52,7 +42,6 @@ class ItemSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "user",
-            "_type",
             "brand",
             "model",
             "leather",
@@ -61,19 +50,9 @@ class ItemSerializer(serializers.ModelSerializer):
         ]
 
 
-class UserProfileSerializer(serializers.ModelSerializer):
-    user = serializers.ReadOnlyField(source="user.username")
-    logs = ItemLogSerializer(many=True, read_only=True)
+class ItemListSerializer(serializers.ModelSerializer):
+    items = ItemDetailSerializer(many=True, read_only=True)
 
     class Meta:
-        model = Item
-        fields = [
-            "id",
-            "user",
-            "_type",
-            "brand",
-            "model",
-            "leather",
-            "created_at",
-            "logs",
-        ]
+        model = get_user_model()
+        fields = ["id", "username", "items"]

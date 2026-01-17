@@ -1,67 +1,58 @@
 from django.contrib.auth import get_user_model
-from rest_framework import generics, permissions, status
-from rest_framework.response import Response
+from rest_framework import generics, permissions
 
 from items.models import Item, ItemLog
-from items.permissions import IsOwnerOrReadOnly
-from items.serializers import ItemLogSerializer, ItemSerializer, UserProfileSerializer
+from items.serializers import (
+    ItemDetailSerializer,
+    ItemListSerializer,
+    ItemLogSerializer,
+)
+
+# class ItemLogList(generics.ListCreateAPIView):
+#     serializer_class = ItemLogSerializer
+#     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+
+#     def get_queryset(self):
+#         pk = self.kwargs.get("pk")
+#         return ItemLog.objects.filter(item_id=pk).order_by("-created_at")
+
+#     def perform_create(self, serializer):
+#         pk = self.kwargs.get("pk")
+#         item = get_object_or_404(Item, pk=pk)
+#         serializer.save(user=self.request.user, item=item)
+
+#     def create(self, request, *args, **kwargs):
+#         "フロントエンドでURLを組み立てなくて済むようにするため"
+#         response = super().create(request, *args, **kwargs)
+#         if response.status_code == status.HTTP_201_CREATED:
+#             item = Item.objects.get(pk=request.data["item"])
+#             serializer = ItemSerializer(item, context={"request": request})
+#             return Response(serializer.data, status=status.HTTP_201_CREATED)
+#         return response
 
 
-class ItemList(generics.ListCreateAPIView):
-    queryset = Item.objects.all()
-    serializer_class = ItemSerializer
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
-
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
-
-
-class ItemDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Item.objects.all()
-    serializer_class = ItemSerializer
-    permission_classes = (
-        permissions.IsAuthenticatedOrReadOnly,
-        IsOwnerOrReadOnly,
-    )
-
-
-class ItemLogList(generics.ListCreateAPIView):
-    queryset = ItemLog.objects.all()
+class ItemLogDetail(generics.RetrieveAPIView):
     serializer_class = ItemLogSerializer
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+    permission_classes = (permissions.AllowAny,)
 
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
-
-    def create(self, request, *args, **kwargs):
-        "フロントエンドでURLを組み立てなくて済むようにするため"
-        response = super().create(request, *args, **kwargs)
-        if response.status_code == status.HTTP_201_CREATED:
-            item = Item.objects.get(pk=request.data["item"])
-            serializer = ItemSerializer(item, context={"request": request})
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return response
+    def get_queryset(self):
+        pk = self.kwargs.get("pk")
+        return ItemLog.objects.filter(pk=pk)
 
 
-class ItemLogDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = ItemLog.objects.all()
-    serializer_class = ItemLogSerializer
-    permission_classes = (
-        permissions.IsAuthenticatedOrReadOnly,
-        IsOwnerOrReadOnly,
-    )
-
-
-class UserProfileView(generics.ListAPIView):
-    serializer_class = UserProfileSerializer
+class ItemList(generics.ListAPIView):
+    serializer_class = ItemListSerializer
     permission_classes = (permissions.AllowAny,)
 
     def get_queryset(self):
         username = self.kwargs.get("username")
-        User = get_user_model()
+        return get_user_model().objects.filter(username=username)
 
-        try:
-            user = User.objects.get(username=username)
-            return Item.objects.filter(user=user)
-        except User.DoesNotExist:
-            return Item.objects.none()
+
+class ItemDetail(generics.RetrieveAPIView):
+    serializer_class = ItemDetailSerializer
+    permission_classes = (permissions.AllowAny,)
+
+    def get_queryset(self):
+        pk = self.kwargs.get("pk")
+        return Item.objects.filter(pk=pk)
