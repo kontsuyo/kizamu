@@ -41,10 +41,10 @@ class ItemDetailSerializer(serializers.ModelSerializer):
         model = Item
         fields = [
             "id",
-            "user",
             "brand",
             "model",
             "leather",
+            "user",
             "created_at",
             "logs",
         ]

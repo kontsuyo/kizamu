@@ -2,6 +2,7 @@ from django.contrib.auth import get_user_model
 from rest_framework import generics, permissions
 
 from items.models import Item, ItemLog
+from items.permissions import IsOwnerOrReadOnly
 from items.serializers import (
     ItemCreateSerializer,
     ItemDetailSerializer,
@@ -50,9 +51,12 @@ class ItemList(generics.ListAPIView):
         return get_user_model().objects.filter(username=username)
 
 
-class ItemDetail(generics.RetrieveAPIView):
+class ItemDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ItemDetailSerializer
-    permission_classes = (permissions.AllowAny,)
+    permission_classes = (
+        permissions.IsAuthenticatedOrReadOnly,
+        IsOwnerOrReadOnly,
+    )
 
     def get_queryset(self):
         pk = self.kwargs.get("pk")
