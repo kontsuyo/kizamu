@@ -30,7 +30,7 @@ class Photo(models.Model):
     item = models.ForeignKey(
         Item,
         on_delete=models.CASCADE,
-        related_name="logs",
+        related_name="photos",
     )
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     image = CloudinaryField(

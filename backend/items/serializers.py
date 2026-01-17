@@ -35,7 +35,7 @@ class PhotoDetailSerializer(serializers.ModelSerializer):
 
 class ItemDetailSerializer(serializers.ModelSerializer):
     user = serializers.ReadOnlyField(source="user.username")
-    logs = PhotoDetailSerializer(many=True, read_only=True)
+    photos = PhotoDetailSerializer(many=True, read_only=True)
 
     class Meta:
         model = Item
@@ -46,7 +46,7 @@ class ItemDetailSerializer(serializers.ModelSerializer):
             "leather",
             "user",
             "created_at",
-            "logs",
+            "photos",
         ]
 
 
