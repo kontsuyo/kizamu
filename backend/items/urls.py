@@ -6,12 +6,12 @@ from items import views
 urlpatterns = [
     path("users/<str:username>/", views.ItemList.as_view(), name="item-list"),
     path(
-        "items/<str:slug>/<int:pk>/",
+        "items/<int:pk>/",
         views.ItemDetail.as_view(),
         name="item-detail",
     ),
     path(
-        "photos/<str:slug>/<int:pk>/",
+        "photos/<int:pk>/",
         views.ItemLogDetail.as_view(),
         name="itemlog-detail",
     ),
