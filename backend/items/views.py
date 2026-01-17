@@ -33,9 +33,12 @@ from items.serializers import (
 #         return response
 
 
-class PhotoDetail(generics.RetrieveAPIView):
+class PhotoDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = PhotoDetailSerializer
-    permission_classes = (permissions.AllowAny,)
+    permission_classes = (
+        permissions.AllowAny,
+        IsOwnerOrReadOnly,
+    )
 
     def get_queryset(self):
         pk = self.kwargs.get("pk")
