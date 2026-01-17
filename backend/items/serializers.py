@@ -5,7 +5,7 @@ from rest_framework import serializers
 from items.models import Item, ItemLog
 
 
-class ItemLogSerializer(serializers.ModelSerializer):
+class PhotoDetailSerializer(serializers.ModelSerializer):
     user = serializers.ReadOnlyField(source="user.username")
     image = serializers.ImageField(required=True, allow_null=False)
 
@@ -35,7 +35,7 @@ class ItemLogSerializer(serializers.ModelSerializer):
 
 class ItemDetailSerializer(serializers.ModelSerializer):
     user = serializers.ReadOnlyField(source="user.username")
-    logs = ItemLogSerializer(many=True, read_only=True)
+    logs = PhotoDetailSerializer(many=True, read_only=True)
 
     class Meta:
         model = Item
@@ -50,7 +50,7 @@ class ItemDetailSerializer(serializers.ModelSerializer):
         ]
 
 
-class ItemListSerializer(serializers.ModelSerializer):
+class ProfileSerializer(serializers.ModelSerializer):
     items = ItemDetailSerializer(many=True, read_only=True)
 
     class Meta:

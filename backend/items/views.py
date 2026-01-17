@@ -6,8 +6,8 @@ from items.permissions import IsOwnerOrReadOnly
 from items.serializers import (
     ItemCreateSerializer,
     ItemDetailSerializer,
-    ItemListSerializer,
-    ItemLogSerializer,
+    PhotoDetailSerializer,
+    ProfileSerializer,
 )
 
 # class ItemLogList(generics.ListCreateAPIView):
@@ -34,7 +34,7 @@ from items.serializers import (
 
 
 class PhotoDetail(generics.RetrieveAPIView):
-    serializer_class = ItemLogSerializer
+    serializer_class = PhotoDetailSerializer
     permission_classes = (permissions.AllowAny,)
 
     def get_queryset(self):
@@ -43,7 +43,7 @@ class PhotoDetail(generics.RetrieveAPIView):
 
 
 class Profile(generics.ListAPIView):
-    serializer_class = ItemListSerializer
+    serializer_class = ProfileSerializer
     permission_classes = (permissions.AllowAny,)
 
     def get_queryset(self):
