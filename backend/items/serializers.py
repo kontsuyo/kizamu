@@ -2,15 +2,15 @@ import cloudinary
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
-from items.models import Item, Photo
+from items.models import Item, PhotoLog
 
 
-class PhotoDetailSerializer(serializers.ModelSerializer):
+class PhotoLogDetailSerializer(serializers.ModelSerializer):
     user = serializers.ReadOnlyField(source="user.username")
     image = serializers.ImageField(required=True, allow_null=False)
 
     class Meta:
-        model = Photo
+        model = PhotoLog
         fields = ["id", "item", "user", "image", "note", "created_at"]
 
     def to_representation(self, instance):
@@ -35,7 +35,7 @@ class PhotoDetailSerializer(serializers.ModelSerializer):
 
 class ItemDetailSerializer(serializers.ModelSerializer):
     user = serializers.ReadOnlyField(source="user.username")
-    logs = PhotoDetailSerializer(many=True, read_only=True)
+    logs = PhotoLogDetailSerializer(many=True, read_only=True)
 
     class Meta:
         model = Item

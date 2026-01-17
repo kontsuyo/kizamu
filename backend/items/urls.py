@@ -12,7 +12,7 @@ urlpatterns = [
     ),
     path(
         "photos/<int:pk>/",
-        views.PhotoDetail.as_view(),
+        views.PhotoLogDetail.as_view(),
         name="itemlog-detail",
     ),
     path("items/create/", views.ItemCreate.as_view(), name="item-create"),
