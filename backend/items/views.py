@@ -53,7 +53,6 @@ class ItemLogDetail(generics.RetrieveUpdateDestroyAPIView):
 
 
 class UserProfileView(generics.ListAPIView):
-    queryset = ItemLog.objects.all()
     serializer_class = UserProfileSerializer
     permission_classes = (permissions.AllowAny,)
 
@@ -63,6 +62,6 @@ class UserProfileView(generics.ListAPIView):
 
         try:
             user = User.objects.get(username=username)
-            return ItemLog.objects.filter(user=user)
+            return Item.objects.filter(user=user)
         except User.DoesNotExist:
-            return ItemLog.objects.none()
+            return Item.objects.none()

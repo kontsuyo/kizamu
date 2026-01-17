@@ -63,26 +63,17 @@ class ItemSerializer(serializers.ModelSerializer):
 
 class UserProfileSerializer(serializers.ModelSerializer):
     user = serializers.ReadOnlyField(source="user.username")
+    logs = ItemLogSerializer(many=True, read_only=True)
 
     class Meta:
-        model = ItemLog
-        fields = ["id", "item", "user", "image", "created_at"]
-
-    def to_representation(self, instance):
-        ret = super().to_representation(instance)
-        # instance.image が存在する場合、Cloudinary の URL に差し替える
-        if instance.image:
-            # Cloudinaryのリサイズ用URLを手動で組み立てる
-            # instance.image.public_id は保存された画像のID（例: boot_logs/lvs4...）
-            url = cloudinary.utils.cloudinary_url(
-                instance.image.public_id,
-                width=600,
-                height=600,
-                crop="limit",
-                quality="auto",
-                fetch_format="auto",
-                secure=True,
-            )[0]  # [0]にURLが入っています
-
-            ret["image"] = url
-        return ret
+        model = Item
+        fields = [
+            "id",
+            "user",
+            "_type",
+            "brand",
+            "model",
+            "leather",
+            "created_at",
+            "logs",
+        ]
