@@ -12,7 +12,7 @@ class PhotoUploadSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Photo
-        fields = ["image", "item", "wore_on", "note", "user"]
+        fields = ["image", "item_id", "wore_on", "note", "user"]
 
 
 class PhotoDetailSerializer(serializers.ModelSerializer):
@@ -23,7 +23,7 @@ class PhotoDetailSerializer(serializers.ModelSerializer):
         model = Photo
         fields = [
             "id",
-            "item",
+            "item_id",
             "image",
             "wore_on",
             "note",
@@ -71,7 +71,7 @@ class ItemDetailSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "brand",
-            "model",
+            "model_name",
             "leather",
             "user",
             "created_at",
@@ -92,4 +92,4 @@ class ItemCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Item
-        fields = ["user", "_type", "brand", "model", "leather"]
+        fields = ["user", "_type", "brand", "model_name", "leather"]

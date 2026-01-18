@@ -15,7 +15,7 @@ class Item(models.Model):
     )
     _type = models.CharField(choices=Type.choices, max_length=10)
     brand = models.CharField(max_length=100)
-    model = models.CharField(max_length=100)
+    model_name = models.CharField(max_length=100)
     leather = models.CharField(max_length=100)
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -23,12 +23,12 @@ class Item(models.Model):
         ordering = ["-created_at"]
 
     def __str__(self):
-        return f"{self.brand} {self.model}"
+        return f"{self.brand} {self.model_name}"
 
 
 class Photo(models.Model):
     id: int
-    item = models.ForeignKey(
+    item_id = models.ForeignKey(
         Item,
         on_delete=models.CASCADE,
         related_name="photos",
@@ -48,4 +48,4 @@ class Photo(models.Model):
         ordering = ["-wore_on"]
 
     def __str__(self):
-        return f"Log for {self.item} at {self.created_at}"
+        return f"Log for {self.item_id} at {self.created_at}"
