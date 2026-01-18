@@ -100,3 +100,11 @@ class Feed(generics.ListAPIView):
     queryset = Photo.objects.all().order_by("-created_at")
     serializer_class = FeedSerializer
     pagination_class = FeedPagination
+
+
+class FeedListView(generics.ListAPIView):
+    """shared_feed=Trueの投稿のみをフィード表示（投稿日時の新しい順）"""
+
+    queryset = Photo.objects.filter(shared_feed=True).order_by("-created_at")
+    serializer_class = FeedSerializer
+    pagination_class = FeedPagination

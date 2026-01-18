@@ -42,6 +42,7 @@ class Photo(models.Model):
     )
     note = models.TextField(blank=True)
     wore_on = models.DateField(blank=False, null=False, default=timezone.now)
+    shared_feed = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
