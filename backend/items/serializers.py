@@ -50,6 +50,18 @@ class PhotoDetailSerializer(serializers.ModelSerializer):
         return ret
 
 
+class PhotoEditSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Photo
+        fields = ["id", "wore_on", "note"]
+
+
+class PhotoDestroySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Photo
+        fields = ["id"]
+
+
 class ItemDetailSerializer(serializers.ModelSerializer):
     user = serializers.ReadOnlyField(source="user.username")
     photos = PhotoDetailSerializer(many=True, read_only=True)
