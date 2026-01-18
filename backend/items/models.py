@@ -1,5 +1,6 @@
 from cloudinary.models import CloudinaryField  # 追加
 from django.db import models
+from django.utils import timezone
 
 from config import settings
 
@@ -40,10 +41,11 @@ class Photo(models.Model):
         null=False,
     )
     note = models.TextField(blank=True)
+    wore_on = models.DateField(blank=False, null=False, default=timezone.now)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        ordering = ["-created_at"]
+        ordering = ["-wore_on"]
 
     def __str__(self):
         return f"Log for {self.item} at {self.created_at}"

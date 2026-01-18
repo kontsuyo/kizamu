@@ -5,13 +5,30 @@ from rest_framework import serializers
 from items.models import Item, Photo
 
 
+class PhotoUploadSerializer(serializers.ModelSerializer):
+    image = serializers.ImageField(required=True, allow_null=False)
+    user = serializers.ReadOnlyField(source="user.username")
+    wore_on = serializers.DateField(format="%Y-%m-%d")  # pyright: ignore[reportArgumentType]
+
+    class Meta:
+        model = Photo
+        fields = ["image", "item", "wore_on", "note", "user"]
+
+
 class PhotoDetailSerializer(serializers.ModelSerializer):
     user = serializers.ReadOnlyField(source="user.username")
     image = serializers.ImageField(required=True, allow_null=False)
 
     class Meta:
         model = Photo
-        fields = ["id", "item", "user", "image", "note", "created_at"]
+        fields = [
+            "id",
+            "item",
+            "image",
+            "wore_on",
+            "note",
+            "user",
+        ]
 
     def to_representation(self, instance):
         ret = super().to_representation(instance)

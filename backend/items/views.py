@@ -7,6 +7,7 @@ from items.serializers import (
     ItemCreateSerializer,
     ItemDetailSerializer,
     PhotoDetailSerializer,
+    PhotoUploadSerializer,
     ProfileSerializer,
 )
 
@@ -33,6 +34,14 @@ from items.serializers import (
 #         return response
 
 
+class PhotoUpload(generics.CreateAPIView):
+    serializer_class = PhotoUploadSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+
 class PhotoDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = PhotoDetailSerializer
     permission_classes = (
@@ -54,6 +63,14 @@ class Profile(generics.ListAPIView):
         return get_user_model().objects.filter(username=username)
 
 
+class ItemCreate(generics.CreateAPIView):
+    serializer_class = ItemCreateSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+
 class ItemDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ItemDetailSerializer
     permission_classes = (
@@ -64,11 +81,3 @@ class ItemDetail(generics.RetrieveUpdateDestroyAPIView):
     def get_queryset(self):
         pk = self.kwargs.get("pk")
         return Item.objects.filter(pk=pk)
-
-
-class ItemCreate(generics.CreateAPIView):
-    serializer_class = ItemCreateSerializer
-    permission_classes = (permissions.IsAuthenticated,)
-
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
