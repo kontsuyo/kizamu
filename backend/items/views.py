@@ -1,9 +1,11 @@
 from django.contrib.auth import get_user_model
 from rest_framework import generics, permissions
+from rest_framework.pagination import CursorPagination
 
 from items.models import Item, Photo
 from items.permissions import IsOwnerOrReadOnly
 from items.serializers import (
+    FeedSerializer,
     ItemCreateSerializer,
     ItemDetailSerializer,
     PhotoDestroySerializer,
@@ -85,3 +87,16 @@ class PhotoDelete(generics.DestroyAPIView):
     def get_queryset(self):
         pk = self.kwargs.get("pk")
         return Photo.objects.filter(pk=pk)
+
+
+class FeedPagination(CursorPagination):
+    page_size = 20
+    ordering = "-created_at"
+
+
+class Feed(generics.ListAPIView):
+    """全ユーザーのフィード（投稿日時の新しい順）"""
+
+    queryset = Photo.objects.all().order_by("-created_at")
+    serializer_class = FeedSerializer
+    pagination_class = FeedPagination

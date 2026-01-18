@@ -93,3 +93,41 @@ class ItemCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Item
         fields = ["user", "_type", "brand", "model_name", "leather"]
+
+
+class FeedSerializer(serializers.ModelSerializer):
+    """フィード表示用シリアライザー"""
+
+    user = serializers.ReadOnlyField(source="user.username")
+    brand = serializers.ReadOnlyField(source="item_id.brand")
+    model_name = serializers.ReadOnlyField(source="item_id.model_name")
+    leather = serializers.ReadOnlyField(source="item_id.leather")
+    image = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Photo
+        fields = [
+            "id",
+            "brand",
+            "model_name",
+            "leather",
+            "image",
+            "note",
+            "user",
+            "created_at",
+        ]
+
+    def get_image(self, obj):
+        # Cloudinaryのリサイズ済みURL
+        if obj.image:
+            url = cloudinary.utils.cloudinary_url(
+                obj.image.public_id,
+                width=400,
+                height=400,
+                crop="limit",
+                quality="auto",
+                fetch_format="auto",
+                secure=True,
+            )[0]
+            return url
+        return None
