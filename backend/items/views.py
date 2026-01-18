@@ -14,6 +14,35 @@ from items.serializers import (
 )
 
 
+class Profile(generics.ListAPIView):
+    serializer_class = ProfileSerializer
+    permission_classes = (permissions.AllowAny,)
+
+    def get_queryset(self):
+        username = self.kwargs.get("username")
+        return get_user_model().objects.filter(username=username)
+
+
+class ItemCreate(generics.CreateAPIView):
+    serializer_class = ItemCreateSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+
+class ItemDetail(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = ItemDetailSerializer
+    permission_classes = (
+        permissions.IsAuthenticatedOrReadOnly,
+        IsOwnerOrReadOnly,
+    )
+
+    def get_queryset(self):
+        pk = self.kwargs.get("pk")
+        return Item.objects.filter(pk=pk)
+
+
 class PhotoUpload(generics.CreateAPIView):
     serializer_class = PhotoUploadSerializer
     permission_classes = (permissions.IsAuthenticated,)
@@ -56,32 +85,3 @@ class PhotoDelete(generics.DestroyAPIView):
     def get_queryset(self):
         pk = self.kwargs.get("pk")
         return Photo.objects.filter(pk=pk)
-
-
-class Profile(generics.ListAPIView):
-    serializer_class = ProfileSerializer
-    permission_classes = (permissions.AllowAny,)
-
-    def get_queryset(self):
-        username = self.kwargs.get("username")
-        return get_user_model().objects.filter(username=username)
-
-
-class ItemCreate(generics.CreateAPIView):
-    serializer_class = ItemCreateSerializer
-    permission_classes = (permissions.IsAuthenticated,)
-
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
-
-
-class ItemDetail(generics.RetrieveUpdateDestroyAPIView):
-    serializer_class = ItemDetailSerializer
-    permission_classes = (
-        permissions.IsAuthenticatedOrReadOnly,
-        IsOwnerOrReadOnly,
-    )
-
-    def get_queryset(self):
-        pk = self.kwargs.get("pk")
-        return Item.objects.filter(pk=pk)
