@@ -57,7 +57,7 @@ def test_item(test_user):
 def test_photo(test_user, test_item):
     """テスト用の写真作成"""
     return Photo.objects.create(
-        item_id=test_item,
+        item=test_item,
         user=test_user,
         image="item_logs/test_image.jpg",
         note="テスト写真",

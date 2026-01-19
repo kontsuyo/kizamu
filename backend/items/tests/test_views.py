@@ -199,7 +199,7 @@ class TestPhotoUpload:
 
 @pytest.mark.django_db
 class TestPhotoDetail:
-    """PhotoDetail エンドポイントのテスト（MVP版）"""
+    """PhotoDetail エンドポイントのテスト（MVP版：RetrieveUpdateDestroyAPIView）"""
 
     def test_retrieve_photo_success(self, api_client, test_photo):
         """写真情報を取得できる"""
@@ -215,89 +215,40 @@ class TestPhotoDetail:
 
         assert response.status_code == 404
 
-
-@pytest.mark.django_db
-class TestPhotoEdit:
-    """PhotoEdit エンドポイントのテスト（MVP版）"""
-
-    def test_edit_photo_owner_success(self, auth_client, test_photo):
-        """所有者は写真情報を編集できる"""
+    def test_update_photo_owner_success(self, auth_client, test_photo):
+        """所有者は写真を更新できる"""
         data = {
-            "note": "編集後のメモ",
+            "note": "更新されたメモ",
             "wore_on": "2025-01-20",
             "shared_feed": False,
         }
-        response = auth_client.patch(
-            reverse("photo-edit", kwargs={"pk": test_photo.pk}), data
+        response = auth_client.put(
+            reverse("photo-detail", kwargs={"pk": test_photo.pk}), data
         )
 
         assert response.status_code == 200
-        assert response.data["note"] == "編集後のメモ"
+        assert response.data["note"] == "更新されたメモ"
 
         # データベースで更新確認
         test_photo.refresh_from_db()
-        assert test_photo.note == "編集後のメモ"
-        assert test_photo.wore_on.strftime("%Y-%m-%d") == "2025-01-20"
+        assert test_photo.note == "更新されたメモ"
         assert test_photo.shared_feed is False
 
-    def test_edit_photo_non_owner_forbidden(self, other_auth_client, test_photo):
-        """所有者以外は編集できない"""
+    def test_update_photo_non_owner_forbidden(self, other_auth_client, test_photo):
+        """所有者以外は更新できない"""
         data = {
-            "note": "不正な編集",
+            "note": "不正な更新",
         }
         response = other_auth_client.patch(
-            reverse("photo-edit", kwargs={"pk": test_photo.pk}), data
+            reverse("photo-detail", kwargs={"pk": test_photo.pk}), data
         )
 
         assert response.status_code == 403
-
-    def test_edit_photo_unauthenticated_user_forbidden(self, api_client, test_photo):
-        """未認証ユーザーは編集できない"""
-        data = {
-            "note": "不正な編集",
-        }
-        response = api_client.patch(
-            reverse("photo-edit", kwargs={"pk": test_photo.pk}), data
-        )
-
-        assert response.status_code == 403
-
-    def test_edit_photo_not_found(self, auth_client):
-        """存在しない写真は404"""
-        data = {
-            "note": "編集",
-        }
-        response = auth_client.patch(reverse("photo-edit", kwargs={"pk": 9999}), data)
-
-        assert response.status_code == 404
-
-    def test_edit_photo_partial_update(self, auth_client, test_photo):
-        """一部のフィールドのみ更新可能"""
-        # noteだけ更新
-        data = {
-            "note": "メモだけ更新",
-        }
-        response = auth_client.patch(
-            reverse("photo-edit", kwargs={"pk": test_photo.pk}), data
-        )
-
-        assert response.status_code == 200
-        assert response.data["note"] == "メモだけ更新"
-
-        # 他のフィールドは変更されていない
-        test_photo.refresh_from_db()
-        assert test_photo.wore_on.strftime("%Y-%m-%d") == "2025-01-19"
-        assert test_photo.shared_feed is True
-
-
-@pytest.mark.django_db
-class TestPhotoDelete:
-    """PhotoDestroy エンドポイントのテスト（MVP版）"""
 
     def test_delete_photo_owner_success(self, auth_client, test_photo):
         """所有者は写真を削除できる"""
         response = auth_client.delete(
-            reverse("photo-delete", kwargs={"pk": test_photo.pk})
+            reverse("photo-detail", kwargs={"pk": test_photo.pk})
         )
 
         assert response.status_code == 204
@@ -308,27 +259,10 @@ class TestPhotoDelete:
     def test_delete_photo_non_owner_forbidden(self, other_auth_client, test_photo):
         """所有者以外は削除できない"""
         response = other_auth_client.delete(
-            reverse("photo-delete", kwargs={"pk": test_photo.pk})
+            reverse("photo-detail", kwargs={"pk": test_photo.pk})
         )
 
         assert response.status_code == 403
 
         # データベースにまだ存在確認
         assert Photo.objects.filter(pk=test_photo.pk).exists()
-
-    def test_delete_photo_unauthenticated_user_forbidden(self, api_client, test_photo):
-        """未認証ユーザーは削除できない"""
-        response = api_client.delete(
-            reverse("photo-delete", kwargs={"pk": test_photo.pk})
-        )
-
-        assert response.status_code == 403
-
-        # データベースにまだ存在確認
-        assert Photo.objects.filter(pk=test_photo.pk).exists()
-
-    def test_delete_photo_not_found(self, auth_client):
-        """存在しない写真は404"""
-        response = auth_client.delete(reverse("photo-delete", kwargs={"pk": 9999}))
-
-        assert response.status_code == 404

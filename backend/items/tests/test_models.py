@@ -10,7 +10,13 @@ from items.models import Item
 @pytest.mark.django_db
 def test_str_returns_brand_and_model():
     user = get_user_model().objects.create_user(username="jdoe", password="pass")
-    item = Item.objects.create(user=user, brand="Nike", model="Air", leather="full")
+    item = Item.objects.create(
+        user=user,
+        _type="Footwear",
+        brand="Nike",
+        model_name="Air",
+        leather="full",
+    )
     assert str(item) == "Nike Air"
 
 
@@ -20,15 +26,17 @@ def test_ordering_by_created_at_desc():
     now = timezone.now()
     older = Item.objects.create(
         user=user,
+        _type="Footwear",
         brand="Brand1",
-        model="Old",
+        model_name="Old",
         leather="x",
         created_at=now - timedelta(days=1),
     )
     newer = Item.objects.create(
         user=user,
+        _type="Footwear",
         brand="Brand2",
-        model="New",
+        model_name="New",
         leather="y",
         created_at=now,
     )
@@ -39,11 +47,23 @@ def test_ordering_by_created_at_desc():
 
 
 @pytest.mark.django_db
-def test_related_name_boot_items():
+def test_related_name_items():
     user = get_user_model().objects.create_user(username="alice", password="pass")
-    item1 = Item.objects.create(user=user, brand="B1", model="M1", leather="l")
-    item2 = Item.objects.create(user=user, brand="B2", model="M2", leather="l2")
+    item1 = Item.objects.create(
+        user=user,
+        _type="Footwear",
+        brand="B1",
+        model_name="M1",
+        leather="l",
+    )
+    item2 = Item.objects.create(
+        user=user,
+        _type="Footwear",
+        brand="B2",
+        model_name="M2",
+        leather="l2",
+    )
 
-    qs = user.boot_items.all()  # pyright: ignore[reportAttributeAccessIssue]
+    qs = user.items.all()  # pyright: ignore[reportAttributeAccessIssue]
     assert qs.count() == 2
     assert item1 in qs and item2 in qs
