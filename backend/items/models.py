@@ -28,7 +28,7 @@ class Item(models.Model):
 
 class Photo(models.Model):
     id: int
-    item_id = models.ForeignKey(
+    item = models.ForeignKey(
         Item,
         on_delete=models.CASCADE,
         related_name="photos",
@@ -49,4 +49,4 @@ class Photo(models.Model):
         ordering = ["-wore_on"]
 
     def __str__(self):
-        return f"Log for {self.item_id} at {self.created_at}"
+        return f"Log for {self.item} at {self.created_at}"

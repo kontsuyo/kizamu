@@ -12,18 +12,19 @@ class PhotoUploadSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Photo
-        fields = ["image", "item_id", "wore_on", "note", "shared_feed", "user"]
+        fields = ["image", "item", "wore_on", "note", "shared_feed", "user"]
 
 
 class PhotoDetailSerializer(serializers.ModelSerializer):
+    item = serializers.ReadOnlyField(source="item.id")
+    image = serializers.ImageField(read_only=True)
     user = serializers.ReadOnlyField(source="user.username")
-    image = serializers.ImageField(required=True, allow_null=False)
 
     class Meta:
         model = Photo
         fields = [
             "id",
-            "item_id",
+            "item",
             "image",
             "wore_on",
             "note",
@@ -100,9 +101,9 @@ class FeedSerializer(serializers.ModelSerializer):
     """フィード表示用シリアライザー"""
 
     user = serializers.ReadOnlyField(source="user.username")
-    brand = serializers.ReadOnlyField(source="item_id.brand")
-    model_name = serializers.ReadOnlyField(source="item_id.model_name")
-    leather = serializers.ReadOnlyField(source="item_id.leather")
+    brand = serializers.ReadOnlyField(source="item.brand")
+    model_name = serializers.ReadOnlyField(source="item.model_name")
+    leather = serializers.ReadOnlyField(source="item.leather")
     image = serializers.SerializerMethodField()
 
     class Meta:

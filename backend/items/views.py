@@ -53,7 +53,7 @@ class PhotoUpload(generics.CreateAPIView):
         serializer.save(user=self.request.user)
 
 
-class PhotoDetail(generics.RetrieveAPIView):
+class PhotoDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = PhotoDetailSerializer
     permission_classes = (
         permissions.AllowAny,
