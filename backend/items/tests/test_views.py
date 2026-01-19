@@ -1,142 +1,334 @@
 import pytest
 from django.urls import reverse
-from rest_framework import status
 
 from items.models import Item, Photo
 
 
 @pytest.mark.django_db
-class TestBootItemAPI:
-    URL = reverse("item-list")
+class TestItemCreate:
+    """ItemCreate エンドポイントのテスト"""
 
-    def test_create_boot_item_happy_path(self, auth_client, test_user):
-        """
-        【ハッピーパス】
-        ログインユーザーがデータをPOSTした際、
-        1. 201 Createdが返ること
-        2. DBに保存されたデータのuserが実行ユーザーと一致すること
-        """
+    def test_create_item_authenticated_user_success(self, auth_client, test_user):
+        """認証ユーザーが正常にアイテムを作成できる"""
         data = {
-            "_type": "Boot",
-            "brand": "Red Wing",
-            "model": "875",
-            "leather": "Oro Legacy",
+            "_type": "Footwear",
+            "brand": "DrMartens",
+            "model_name": "1461",
+            "leather": "smooth",
         }
+        response = auth_client.post(reverse("item-create"), data)
 
-        response = auth_client.post(self.URL, data, format="json")
+        assert response.status_code == 201
+        assert response.data["brand"] == "DrMartens"
+        assert response.data["user"] == test_user.username
 
-        # 1. ステータスコードの確認
-        assert response.status_code == status.HTTP_201_CREATED
+        # データベースに保存されているか確認
+        item = Item.objects.get(brand="DrMartens")
+        assert item.user == test_user
+        assert item.model_name == "1461"
 
-        # 2. データの整合性確認
-        assert response.data["brand"] == "Red Wing"
+    def test_create_item_unauthenticated_user_forbidden(self, api_client):
+        """未認証ユーザーはアイテム作成できない"""
+        data = {
+            "_type": "Footwear",
+            "brand": "DrMartens",
+            "model_name": "1461",
+            "leather": "smooth",
+        }
+        response = api_client.post(reverse("item-create"), data)
 
-        # 3. perform_createの検証 (userが自動セットされているか)
-        boot = Item.objects.get(id=response.data["id"])
-        assert boot.user == test_user
+        assert response.status_code == 403
 
-    def test_list_boot_items_happy_path(self, api_client, test_user):
-        """
-        【ハッピーパス】
-        全ユーザー（未ログイン含む）がブーツ一覧を取得できること
-        """
-        # 事前にデータを作成しておく
-        Item.objects.create(
-            user=test_user, brand="Alden", model="Indy", leather="Chromexcel"
+    def test_create_item_missing_required_fields(self, auth_client):
+        """必須フィールドがない場合エラー"""
+        # brand が未指定
+        data = {
+            "_type": "Footwear",
+            "model_name": "1461",
+            "leather": "smooth",
+        }
+        response = auth_client.post(reverse("item-create"), data)
+
+        assert response.status_code == 400
+        assert "brand" in response.data
+
+    def test_create_item_invalid_type_choice(self, auth_client):
+        """無効な _type を指定するとエラー"""
+        data = {
+            "_type": "InvalidType",
+            "brand": "DrMartens",
+            "model_name": "1461",
+            "leather": "smooth",
+        }
+        response = auth_client.post(reverse("item-create"), data)
+
+        assert response.status_code == 400
+        assert "_type" in response.data
+
+    def test_create_item_user_is_automatically_set(self, auth_client, test_user):
+        """user フィールドが自動的に設定される（指定不可）"""
+        data = {
+            "_type": "Footwear",
+            "brand": "Nike",
+            "model_name": "AirForce1",
+            "leather": "canvas",
+            # user を指定しても無視される
+        }
+        response = auth_client.post(reverse("item-create"), data)
+
+        assert response.status_code == 201
+        assert response.data["user"] == test_user.username
+
+
+@pytest.mark.django_db
+class TestItemDetail:
+    """ItemDetail エンドポイントのテスト"""
+
+    def test_retrieve_item_success(self, api_client, test_item):
+        """アイテムを取得できる"""
+        response = api_client.get(reverse("item-detail", kwargs={"pk": test_item.pk}))
+
+        assert response.status_code == 200
+        assert response.data["brand"] == "Nicks"
+        assert response.data["model_name"] == "TankerPro"
+        assert response.data["leather"] == "Waxed Flesh"
+
+    def test_retrieve_item_not_found(self, api_client):
+        """存在しないアイテムは404"""
+        response = api_client.get(reverse("item-detail", kwargs={"pk": 9999}))
+
+        assert response.status_code == 404
+
+    def test_update_item_owner_success(self, auth_client, test_item):
+        """所有者はアイテムを更新できる"""
+        data = {
+            "_type": "Footwear",
+            "brand": "Nicks",
+            "model_name": "TankerPro",
+            "leather": "Chromexcel",  # 更新
+        }
+        response = auth_client.put(
+            reverse("item-detail", kwargs={"pk": test_item.pk}), data
         )
 
-        response = api_client.get(self.URL)
+        assert response.status_code == 200
+        assert response.data["leather"] == "Chromexcel"
 
-        assert response.status_code == status.HTTP_200_OK
-        assert len(response.data) == 1
-        assert response.data[0]["brand"] == "Alden"
+        # データベースで更新確認
+        test_item.refresh_from_db()
+        assert test_item.leather == "Chromexcel"
 
+    def test_update_item_non_owner_forbidden(self, other_auth_client, test_item):
+        """所有者以外は更新できない"""
+        data = {
+            "_type": "Footwear",
+            "brand": "RedWing",
+            "model_name": "Iron Ranger",
+            "leather": "Leather",
+        }
+        response = other_auth_client.put(
+            reverse("item-detail", kwargs={"pk": test_item.pk}), data
+        )
 
-@pytest.mark.django_db
-def test_update_boot_item_by_non_owner_fails(other_auth_client, test_user):
-    boot = Item.objects.create(
-        user=test_user, brand="Red Wing", model="875", leather="Oro"
-    )
-    url = reverse("item-detail", kwargs={"pk": boot.pk})
+        assert response.status_code == 403
 
-    data = {"brand": "Hack Brand"}
-    response = other_auth_client.put(url, data)
+    def test_delete_item_owner_success(self, auth_client, test_item):
+        """所有者はアイテムを削除できる"""
+        response = auth_client.delete(
+            reverse("item-detail", kwargs={"pk": test_item.pk})
+        )
 
-    assert response.status_code == status.HTTP_403_FORBIDDEN
-    boot.refresh_from_db()
-    assert boot.brand == "Red Wing"
+        assert response.status_code == 204
 
+        # データベースから削除確認
+        assert not Item.objects.filter(pk=test_item.pk).exists()
 
-@pytest.mark.django_db
-def test_create_boot_log_happy_path(auth_client, test_user):
-    """【ハッピーパス】特定のブーツに対してログを投稿できるか"""
-    boot = Item.objects.create(user=test_user, brand="Red Wing", model="875")
-    url = reverse("itemlog-list")
+    def test_delete_item_non_owner_forbidden(self, other_auth_client, test_item):
+        """所有者以外は削除できない"""
+        response = other_auth_client.delete(
+            reverse("item-detail", kwargs={"pk": test_item.pk})
+        )
 
-    data = {"boot_item": boot.id, "note": "今日はオイルアップをしました。"}
-    response = auth_client.post(url, data)
-    print(response.data)
+        assert response.status_code == 403
 
-    assert response.status_code == status.HTTP_201_CREATED
-    assert response.data["logs"][0]["note"] == "今日はオイルアップをしました。"
-    assert response.data["logs"][0]["boot_item"] == boot.id
-
-
-@pytest.mark.django_db
-def test_boot_item_detail_contains_logs(auth_client, test_user):
-    """【ハッピーパス】ブーツ詳細APIに紐づくログが含まれているか"""
-    boot = Item.objects.create(user=test_user, brand="Red Wing", model="875")
-    Photo.objects.create(boot_item=boot, user=test_user, note="ログ1")
-    Photo.objects.create(boot_item=boot, user=test_user, note="ログ2")
-
-    url = reverse("item-detail", kwargs={"pk": boot.pk})
-
-    response = auth_client.get(url)
-    print(response.data)
-
-    assert response.status_code == status.HTTP_200_OK
-    assert len(response.data["logs"]) == 2
-    assert response.data["logs"][0]["note"] == "ログ2"
+        # データベースにまだ存在確認
+        assert Item.objects.filter(pk=test_item.pk).exists()
 
 
 @pytest.mark.django_db
-def test_create_log_returns_parent_boot_item(auth_client, test_user):
-    boot = Item.objects.create(user=test_user, brand="Red Wing", model="875")
-    url = reverse("itemlog-list")
+class TestPhotoUpload:
+    """PhotoUpload エンドポイントのテスト（MVP版：mockなし）"""
 
-    data = {"boot_item": boot.id, "note": "メンテナンス完了"}
-    response = auth_client.post(url, data)
+    def test_upload_photo_unauthenticated_user_forbidden(self, api_client, test_item):
+        """未認証ユーザーは写真投稿できない"""
+        data = {
+            "item_id": test_item.pk,
+            "note": "新しい靴",
+            "wore_on": "2025-01-19",
+            "shared_feed": True,
+        }
+        response = api_client.post(reverse("photo-upload"), data)
 
-    assert response.status_code == status.HTTP_201_CREATED
-    # レスポンスのトップレベルに "logs" が含まれている（＝BootItemのデータが返っている）か確認
-    assert "logs" in response.data
-    assert response.data["logs"][0]["note"] == "メンテナンス完了"
+        assert response.status_code == 403
+
+    def test_upload_photo_missing_required_fields(self, auth_client, test_item):
+        """必須フィールド（image）がない場合エラー"""
+        data = {
+            "item_id": test_item.pk,
+            "note": "新しい靴",
+            "wore_on": "2025-01-19",
+            "shared_feed": True,
+        }
+        response = auth_client.post(reverse("photo-upload"), data)
+
+        assert response.status_code == 400
+        assert "image" in response.data
+
+    def test_upload_photo_invalid_item_id(self, auth_client):
+        """存在しないitem_idでエラー"""
+        data = {
+            "item_id": 9999,
+            "note": "新しい靴",
+            "wore_on": "2025-01-19",
+            "shared_feed": True,
+        }
+        response = auth_client.post(reverse("photo-upload"), data)
+
+        assert response.status_code == 400
 
 
-# from django.core.files.uploadedfile import SimpleUploadedFile
-# @pytest.mark.django_db
-# def test_create_boot_log_actual_upload(auth_client, test_user):
-#     """【実地テスト】実際に Cloudinary へアップロードできるか"""
+@pytest.mark.django_db
+class TestPhotoDetail:
+    """PhotoDetail エンドポイントのテスト（MVP版）"""
 
-#     boot = BootItem.objects.create(user=test_user, brand="Red Wing", model="9060")
-#     url = reverse("itemlog-list")
+    def test_retrieve_photo_success(self, api_client, test_photo):
+        """写真情報を取得できる"""
+        response = api_client.get(reverse("photo-detail", kwargs={"pk": test_photo.pk}))
 
-#     small_gif = (
-#         b"\x47\x49\x46\x38\x39\x61\x01\x00\x01\x00\x00\x00\x00\x21\xf9"
-#         b"\x04\x01\x0a\x00\x01\x00\x2c\x00\x00\x00\x00\x01\x00\x01\x00"
-#         b"\x00\x02\x02\x4c\x01\x00\x3b"
-#     )
-#     image_file = SimpleUploadedFile(
-#         "real_test_image.gif", small_gif, content_type="image/gif"
-#     )
+        assert response.status_code == 200
+        assert response.data["note"] == "テスト写真"
+        assert response.data["wore_on"] == "2025-01-19"
 
-#     data = {
-#         "boot_item": boot.id,
-#         "note": "Cloudinaryアップロードテスト",
-#         "image": image_file,
-#     }
-#     response = auth_client.post(url, data, format="multipart")
+    def test_retrieve_photo_not_found(self, api_client):
+        """存在しない写真は404"""
+        response = api_client.get(reverse("photo-detail", kwargs={"pk": 9999}))
 
-#     assert response.status_code == status.HTTP_201_CREATED
-#     assert "cloudinary.com" in response.data["logs"][0]["image"]
-#     print(f"\nUploaded Image URL: {response.data['logs'][0]['image']}")
+        assert response.status_code == 404
+
+
+@pytest.mark.django_db
+class TestPhotoEdit:
+    """PhotoEdit エンドポイントのテスト（MVP版）"""
+
+    def test_edit_photo_owner_success(self, auth_client, test_photo):
+        """所有者は写真情報を編集できる"""
+        data = {
+            "note": "編集後のメモ",
+            "wore_on": "2025-01-20",
+            "shared_feed": False,
+        }
+        response = auth_client.patch(
+            reverse("photo-edit", kwargs={"pk": test_photo.pk}), data
+        )
+
+        assert response.status_code == 200
+        assert response.data["note"] == "編集後のメモ"
+
+        # データベースで更新確認
+        test_photo.refresh_from_db()
+        assert test_photo.note == "編集後のメモ"
+        assert test_photo.wore_on.strftime("%Y-%m-%d") == "2025-01-20"
+        assert test_photo.shared_feed is False
+
+    def test_edit_photo_non_owner_forbidden(self, other_auth_client, test_photo):
+        """所有者以外は編集できない"""
+        data = {
+            "note": "不正な編集",
+        }
+        response = other_auth_client.patch(
+            reverse("photo-edit", kwargs={"pk": test_photo.pk}), data
+        )
+
+        assert response.status_code == 403
+
+    def test_edit_photo_unauthenticated_user_forbidden(self, api_client, test_photo):
+        """未認証ユーザーは編集できない"""
+        data = {
+            "note": "不正な編集",
+        }
+        response = api_client.patch(
+            reverse("photo-edit", kwargs={"pk": test_photo.pk}), data
+        )
+
+        assert response.status_code == 403
+
+    def test_edit_photo_not_found(self, auth_client):
+        """存在しない写真は404"""
+        data = {
+            "note": "編集",
+        }
+        response = auth_client.patch(reverse("photo-edit", kwargs={"pk": 9999}), data)
+
+        assert response.status_code == 404
+
+    def test_edit_photo_partial_update(self, auth_client, test_photo):
+        """一部のフィールドのみ更新可能"""
+        # noteだけ更新
+        data = {
+            "note": "メモだけ更新",
+        }
+        response = auth_client.patch(
+            reverse("photo-edit", kwargs={"pk": test_photo.pk}), data
+        )
+
+        assert response.status_code == 200
+        assert response.data["note"] == "メモだけ更新"
+
+        # 他のフィールドは変更されていない
+        test_photo.refresh_from_db()
+        assert test_photo.wore_on.strftime("%Y-%m-%d") == "2025-01-19"
+        assert test_photo.shared_feed is True
+
+
+@pytest.mark.django_db
+class TestPhotoDelete:
+    """PhotoDestroy エンドポイントのテスト（MVP版）"""
+
+    def test_delete_photo_owner_success(self, auth_client, test_photo):
+        """所有者は写真を削除できる"""
+        response = auth_client.delete(
+            reverse("photo-delete", kwargs={"pk": test_photo.pk})
+        )
+
+        assert response.status_code == 204
+
+        # データベースから削除確認
+        assert not Photo.objects.filter(pk=test_photo.pk).exists()
+
+    def test_delete_photo_non_owner_forbidden(self, other_auth_client, test_photo):
+        """所有者以外は削除できない"""
+        response = other_auth_client.delete(
+            reverse("photo-delete", kwargs={"pk": test_photo.pk})
+        )
+
+        assert response.status_code == 403
+
+        # データベースにまだ存在確認
+        assert Photo.objects.filter(pk=test_photo.pk).exists()
+
+    def test_delete_photo_unauthenticated_user_forbidden(self, api_client, test_photo):
+        """未認証ユーザーは削除できない"""
+        response = api_client.delete(
+            reverse("photo-delete", kwargs={"pk": test_photo.pk})
+        )
+
+        assert response.status_code == 403
+
+        # データベースにまだ存在確認
+        assert Photo.objects.filter(pk=test_photo.pk).exists()
+
+    def test_delete_photo_not_found(self, auth_client):
+        """存在しない写真は404"""
+        response = auth_client.delete(reverse("photo-delete", kwargs={"pk": 9999}))
+
+        assert response.status_code == 404
