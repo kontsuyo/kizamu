@@ -57,7 +57,7 @@ class PhotoDetail(generics.RetrieveAPIView):
     serializer_class = PhotoDetailSerializer
     permission_classes = (
         permissions.AllowAny,
-        IsOwnerOrReadOnly,  # ! Retrieveだからいらない
+        IsOwnerOrReadOnly,
     )
 
     def get_queryset(self):
@@ -65,7 +65,7 @@ class PhotoDetail(generics.RetrieveAPIView):
         return Photo.objects.filter(pk=pk)
 
 
-class PhotoEdit(generics.UpdateAPIView):
+class PhotoEdit(generics.RetrieveUpdateAPIView):
     serializer_class = PhotoEditSerializer
     permission_classes = (
         permissions.IsAuthenticated,
