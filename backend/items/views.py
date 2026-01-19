@@ -8,9 +8,7 @@ from items.serializers import (
     FeedSerializer,
     ItemCreateSerializer,
     ItemDetailSerializer,
-    PhotoDestroySerializer,
     PhotoDetailSerializer,
-    PhotoEditSerializer,
     PhotoUploadSerializer,
     ProfileSerializer,
 )
@@ -57,30 +55,6 @@ class PhotoDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = PhotoDetailSerializer
     permission_classes = (
         permissions.AllowAny,
-        IsOwnerOrReadOnly,
-    )
-
-    def get_queryset(self):
-        pk = self.kwargs.get("pk")
-        return Photo.objects.filter(pk=pk)
-
-
-class PhotoEdit(generics.RetrieveUpdateAPIView):
-    serializer_class = PhotoEditSerializer
-    permission_classes = (
-        permissions.IsAuthenticated,
-        IsOwnerOrReadOnly,
-    )
-
-    def get_queryset(self):
-        pk = self.kwargs.get("pk")
-        return Photo.objects.filter(pk=pk)
-
-
-class PhotoDelete(generics.DestroyAPIView):
-    serializer_class = PhotoDestroySerializer
-    permission_classes = (
-        permissions.IsAuthenticated,
         IsOwnerOrReadOnly,
     )
 
