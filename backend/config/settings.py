@@ -14,6 +14,7 @@ from pathlib import Path
 
 import cloudinary
 import environ
+from corsheaders.defaults import default_headers
 
 env = environ.Env(DEBUG=(bool, False))
 
@@ -48,9 +49,20 @@ INSTALLED_APPS = [
     "items",
 ]
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:8000",
-]
+# 本番公開時は、特定のフロントエンドURLだけに絞りますが、
+# 開発中はどこからでも繋がるようにしておくとスムーズです。
+CORS_ALLOW_ALL_ORIGINS = True
+
+# もし特定のURL（例：Reactの3000番ポート）だけに絞る場合はこちら
+# CORS_ALLOWED_ORIGINS = [
+#     "http://localhost:3000",
+#     "http://127.0.0.1:3000",
+# ]
+
+# ブラウザからのリクエストで許可する非標準HTTPヘッダーのリスト。
+# JWTで使用するヘッダー"authorization"を含んでいる。
+CORS_ALLOW_HEADERS = (*default_headers,)
+
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
