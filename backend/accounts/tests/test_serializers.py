@@ -1,4 +1,5 @@
 import pytest
+
 from accounts.serializers import UserRegisterSerializer
 
 
@@ -32,4 +33,16 @@ class TestUserRegisterSerializer:
         serializer = UserRegisterSerializer(data=data)
         assert not serializer.is_valid()
         assert "password" in serializer.errors
-        assert serializer.errors["password"][0] == "Passwords do not match."  # pyright: ignore[reportCallIssue, reportArgumentType]
+        assert serializer.errors["password"][0] == "パスワードが一致しません。"  # pyright: ignore[reportCallIssue, reportArgumentType]
+
+    def test_email_is_blank(self):
+        data = {
+            "username": "testuser",
+            "email": "",
+            "password": "password123",
+            "confirm_password": "123password",
+        }
+        serializer = UserRegisterSerializer(data=data)
+        assert not serializer.is_valid()
+        assert "email" in serializer.errors
+        assert serializer.errors["email"][0] == "この項目は空にできません。"  # pyright: ignore[reportArgumentType, reportCallIssue]
