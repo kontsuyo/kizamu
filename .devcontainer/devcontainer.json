@@ -28,7 +28,8 @@
         "ms-python.debugpy",
         "streetsidesoftware.code-spell-checker",
         "batisteo.vscode-django",
-        "charliermarsh.ruff"
+        "charliermarsh.ruff",
+        "esbenp.prettier-vscode"
       ],
       "settings": {
         "terminal.integrated.defaultProfile.linux": "bash"
