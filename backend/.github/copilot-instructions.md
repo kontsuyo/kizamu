@@ -7,7 +7,7 @@
 
 ## 技術スタック
 - **Backend:** Django Rest Framework (Python)
-- **Frontend:** React Native (Expo)
+- **Frontend:** Next.js
 - **Database:** PostgreSQL
 
 ## コーディング方針
@@ -15,9 +15,11 @@
   - シンプルでメンテナンスしやすいコードを優先する。
 - **Backend (DRY):** - ModelSerializerを基本とし、APIはRESTfulな設計にする。
   - 認証はJWTを使用する予定。
-- **Frontend (React Native):** - 関数コンポーネントとHooks（useState, useEffect）を使用する。
+- **Frontend (Next.js):** - 関数コンポーネントとHooks（useState, useEffect）を使用する。
   - スタイリングはStyleSheetまたはStyled-componentsを使用する。
 
 ## 現在のフェーズ
 - 開発初期段階。
-- まずは「ブーツ登録機能」と「写真投稿機能」のMVP（最小機能）開発を目指している。
+<!-- - まずは「ブーツ登録機能」と「写真投稿機能」のMVP（最小機能）開発を目指している。 -->
+- バックエンドのMVP開発はMVP開発は終了。
+- これからフロントエンド開発に入る。
