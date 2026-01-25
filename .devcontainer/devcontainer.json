@@ -4,7 +4,7 @@
   "service": "backend",
   "workspaceFolder": "/home/user1/dev",
   "remoteUser": "user1",
-  "forwardPorts": [8000, 5432],
+  "forwardPorts": [8000, 5173, 5432],
   "customizations": {
     "vscode": {
       "extensions": [

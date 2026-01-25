@@ -16,16 +16,33 @@ services:
 
   backend:
     build: ./backend
+    working_dir: /home/user1/dev/backend
     command: python manage.py runserver 0.0.0.0:8000
     ports:
       - "8000:8000"
     env_file: .env
     depends_on:
       - db
+      # db:
+      #   condition: service_healthy
     stdin_open: true
     tty: true
     volumes:
-      - ../backend:/home/user1/dev
+      - ..:/home/user1/dev
 
-# volumes:
-#   db_data:
+  frontend:
+    image: node:24-slim
+    working_dir: /home/user1/dev/frontend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ../frontend:/home/user1/dev/frontend
+    depends_on:
+      backend:
+        condition: service_started
+    command: sh -c "npm install && npm run dev"
+    environment:
+      - NODE_ENV=development
+      - WATCHPACK_POLLING=true # Dockerでのホットリロードを安定させる設定
+    stdin_open: true
+    tty: true
