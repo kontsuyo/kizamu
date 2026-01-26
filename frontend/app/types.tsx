@@ -7,3 +7,9 @@ export interface Item {
   user: string;
   created_at: string;
 }
+
+export interface PaginatedResponse<T> {
+  next: string | null;
+  previous: string | null;
+  results: T[];
+}
