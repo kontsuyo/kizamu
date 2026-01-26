@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Item, PaginatedResponse } from "./types";
 
 async function fetchItems(): Promise<Item[]> {
@@ -19,16 +20,28 @@ export default async function Home() {
   const results = await fetchItems();
   const listItems = results.map((item: Item) => (
     <li key={item.id}>
-      <div>
-        {item.brand} {item.model_name}
-      </div>
-      <div>{item.leather}</div>
-      <div>
-        <img src={item.image} alt="" />
-      </div>
-      <div>
-        {item.user} {item.created_at}
-      </div>
+      <article>
+        <div>
+          <Link href={`/items/${item.id}`}>
+            <h2>
+              {item.brand} {item.model_name}
+            </h2>
+            <h3>{item.leather}</h3>
+          </Link>
+        </div>
+        <div>
+          <Link href={`/photos/${item.id}`}>
+            <img src={item.image} alt="" />
+          </Link>
+        </div>
+        <div>
+          <Link href={`/users/${item.user}`}>
+            <p>{item.user}</p>
+          </Link>
+          <p>{item.created_at}</p>
+          <p>{item.note}</p>
+        </div>
+      </article>
     </li>
   ));
   return (
