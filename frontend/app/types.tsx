@@ -4,6 +4,7 @@ export interface Item {
   model_name: string;
   leather: string;
   image: string;
+  note: string;
   user: string;
   created_at: string;
 }
