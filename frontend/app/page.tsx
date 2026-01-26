@@ -38,7 +38,9 @@ export default async function Home() {
           <Link href={`/users/${item.user}`}>
             <p>{item.user}</p>
           </Link>
-          <p>{item.created_at}</p>
+          <time dateTime={item.created_at.slice(0, 10)}>
+            {item.created_at.slice(0, 10)}
+          </time>
           <p>{item.note}</p>
         </div>
       </article>
