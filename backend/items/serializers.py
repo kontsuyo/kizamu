@@ -93,11 +93,13 @@ class FeedSerializer(serializers.ModelSerializer):
     model_name = serializers.ReadOnlyField(source="item.model_name")
     leather = serializers.ReadOnlyField(source="item.leather")
     image = serializers.SerializerMethodField()
+    item_id = serializers.ReadOnlyField(source="item.id")
 
     class Meta:
         model = Photo
         fields = [
             "id",
+            "item_id",
             "brand",
             "model_name",
             "leather",

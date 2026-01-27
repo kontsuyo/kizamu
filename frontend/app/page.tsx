@@ -1,14 +1,14 @@
 import Link from "next/link";
-import { Item, PaginatedResponse } from "./types";
+import { Post, PaginatedResponse } from "./types";
 
-async function fetchItems(): Promise<Item[]> {
+async function fetchPosts(): Promise<Post[]> {
   const url = "http://backend:8000/";
   try {
     const response = await fetch(url);
     if (!response.ok) {
       throw new Error(`レスポンスステータス: ${response.status}`);
     }
-    const json: PaginatedResponse<Item> = await response.json();
+    const json: PaginatedResponse<Post> = await response.json();
     return json.results;
   } catch (error) {
     console.error("データ取得エラー:", error);
@@ -17,38 +17,38 @@ async function fetchItems(): Promise<Item[]> {
 }
 
 export default async function Home() {
-  const results = await fetchItems();
-  const listItems = results.map((item: Item) => (
-    <li key={item.id}>
+  const posts = await fetchPosts();
+  const listPost = posts.map((post: Post) => (
+    <li key={post.id}>
       <article>
         <div>
-          <Link href={`/items/${item.id}`}>
+          <Link href={`/items/${post.item_id}`}>
             <h2>
-              {item.brand} {item.model_name}
+              {post.brand} {post.model_name}
             </h2>
-            <h3>{item.leather}</h3>
+            <h3>{post.leather}</h3>
           </Link>
         </div>
         <div>
-          <Link href={`/photos/${item.id}`}>
-            <img src={item.image} alt="" />
+          <Link href={`/photos/${post.id}`}>
+            <img src={post.image} alt="" />
           </Link>
         </div>
         <div>
-          <Link href={`/users/${item.user}`}>
-            <p>{item.user}</p>
+          <Link href={`/users/${post.user}`}>
+            <p>{post.user}</p>
           </Link>
-          <time dateTime={item.created_at.slice(0, 10)}>
-            {item.created_at.slice(0, 10)}
+          <time dateTime={post.created_at.slice(0, 10)}>
+            {post.created_at.slice(0, 10)}
           </time>
-          <p>{item.note}</p>
+          <p>{post.note}</p>
         </div>
       </article>
     </li>
   ));
   return (
     <div>
-      <ul>{listItems}</ul>
+      <ul>{listPost}</ul>
     </div>
   );
 }
