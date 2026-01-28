@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Item, ItemPageProps, Photo } from "../../types";
 
 async function fetchItem(itemId: number): Promise<Item | null> {
@@ -30,7 +31,9 @@ export default async function ItemPage({ params }: ItemPageProps) {
   }
   const listPhotos = item.photos.map((photo: Photo) => (
     <li key={item.id}>
-      <img src={photo.image} alt="アイテム画像" />
+      <Link href={`/photos/${photo.id}`}>
+        <img src={photo.image} alt="アイテム画像" />
+      </Link>
     </li>
   ));
   return (
