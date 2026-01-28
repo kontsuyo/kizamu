@@ -5,6 +5,23 @@ from rest_framework import serializers
 from items.models import Item, Photo
 
 
+class ItemSummarySerializer(serializers.ModelSerializer):
+    """Item詳細情報用の詳細情報用の軽量シリアライザー"""
+
+    user = serializers.ReadOnlyField(source="user.username")
+
+    class Meta:
+        model = Item
+        fields = [
+            "id",
+            "brand",
+            "model_name",
+            "leather",
+            "user",
+            "created_at",
+        ]
+
+
 class PhotoUploadSerializer(serializers.ModelSerializer):
     image = serializers.ImageField(required=True, allow_null=False)
     user = serializers.ReadOnlyField(source="user.username")
@@ -16,7 +33,7 @@ class PhotoUploadSerializer(serializers.ModelSerializer):
 
 
 class PhotoDetailSerializer(serializers.ModelSerializer):
-    item = serializers.ReadOnlyField(source="item.id")
+    item = ItemSummarySerializer(read_only=True)
     image = serializers.ImageField(read_only=True)
     user = serializers.ReadOnlyField(source="user.username")
 
