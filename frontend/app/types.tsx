@@ -41,3 +41,15 @@ export interface Photo {
   shared_feed: boolean;
   user: string;
 }
+
+export interface UserProfile {
+  id: number;
+  username: string;
+  items: [Item];
+}
+
+export interface ProfilePageProps {
+  params: {
+    username: string;
+  };
+}
