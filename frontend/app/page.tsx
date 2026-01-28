@@ -6,7 +6,7 @@ async function fetchPosts(): Promise<Post[]> {
   try {
     const response = await fetch(url);
     if (!response.ok) {
-      throw new Error(`レスポンスステータス: ${response.status}`);
+      return [];
     }
     const json: PaginatedResponse<Post> = await response.json();
     return json.results;

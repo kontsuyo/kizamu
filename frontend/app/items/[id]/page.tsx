@@ -6,7 +6,7 @@ async function fetchItem(itemId: number): Promise<Item | null> {
   try {
     const response = await fetch(url);
     if (!response.ok) {
-      throw new Error(`レスポンスステータス: ${response.status}`);
+      return null;
     }
     const json: Item = await response.json();
     return json;
@@ -15,8 +15,6 @@ async function fetchItem(itemId: number): Promise<Item | null> {
     return null;
   }
 }
-
-async function getPhotos() {}
 
 export default async function ItemPage({ params }: ItemPageProps) {
   const resolvedParams = await params;
