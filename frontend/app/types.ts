@@ -34,7 +34,7 @@ export interface ItemPageProps {
 
 export interface Photo {
   id: number;
-  item: number;
+  item: Item;
   image: string;
   wore_on: string;
   note: string;
