@@ -45,6 +45,7 @@ export default async function PhotoPage({ params }: PhotoPageProps) {
           <Link href={`/users/${photo.user}`}>{photo.user}</Link>{" "}
           {photo.wore_on}
         </p>
+        <p>{photo.note}</p>
       </div>
     </>
   );
