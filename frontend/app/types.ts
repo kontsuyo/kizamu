@@ -23,7 +23,7 @@ export interface Item {
   leather: string;
   user: string;
   created_at: string;
-  photos: [];
+  photos: Photo[];
 }
 
 export interface ItemPageProps {
@@ -51,7 +51,7 @@ export interface PhotoPageProps {
 export interface UserProfile {
   id: number;
   username: string;
-  items: [Item];
+  items: Item[];
 }
 
 export interface ProfilePageProps {

@@ -1,48 +1,53 @@
-import type { Item, Photo, ProfilePageProps, UserProfile } from "@/app/types";
+import type { ProfilePageProps, UserProfile } from "@/app/types";
+import Link from "next/link";
 
-async function fetchUser(username: string): Promise<UserProfile[] | null> {
+async function fetchUserItems(username: string): Promise<UserProfile | null> {
   const url = `http://backend:8000/users/${username}/`;
   try {
     const response = await fetch(url);
     if (!response.ok) {
-      throw new Error(`レスポンスステータス: ${response.status}`);
+      return null;
     }
-    const json: UserProfile[] = await response.json();
-    return json;
+    const json = await response.json();
+    return json[0];
   } catch (error) {
-    console.error("データ取得エラー:", error);
+    console.error("データ取得エラー: ", error);
     return null;
   }
 }
 
-async function getImageUrl(username: string): Promise<string[]> {
-  const users = await fetchUser(username);
-  if (!users || users.length === 0) {
-    return [];
-  }
-  const user = users[0];
-  const imageUrls = user.items
-    .filter((item) => item.photos && item.photos.length > 0)
-    .map((item) => item.photos[0].image);
-  return imageUrls;
-}
-
 export default async function ProfilePage({ params }: ProfilePageProps) {
-  const resolvedParams = await params;
-  const username = resolvedParams.username;
-  const urls = await getImageUrl(username);
-  const listImage = urls.map((url, index) => (
+  const resolveParams = await params;
+  const username = resolveParams.username;
+  const userItems = await fetchUserItems(username);
+  if (!userItems) {
+    return (
+      <div>
+        <p>ユーザーが見つかりません</p>
+      </div>
+    );
+  }
+  const photos = userItems.items
+    .filter((item) => item.photos.length > 0)
+    .map((item) => ({
+      itemId: item.id,
+      image: item.photos[0].image,
+    }));
+
+  const photoList = photos.map((photo, index) => (
     <li key={index}>
-      <img src={url} alt="アイテムの画像" />
+      <Link href={`/items/${photo.itemId}`}>
+        <img src={photo.image} alt="アイテム画像" />
+      </Link>
     </li>
   ));
   return (
     <div>
       <div>
-        <h2>{username}</h2>
+        <h2>{userItems.username}</h2>
       </div>
       <div>
-        <ul>{listImage}</ul>
+        <ul>{photoList}</ul>
       </div>
     </div>
   );

@@ -22,6 +22,43 @@ class ItemSummarySerializer(serializers.ModelSerializer):
         ]
 
 
+class PhotoSummarySerializer(serializers.ModelSerializer):
+    """Photo詳細情報用の軽量シリアライザー"""
+
+    image = serializers.ImageField(read_only=True)
+    user = serializers.ReadOnlyField(source="user.username")
+
+    class Meta:
+        model = Photo
+        fields = [
+            "id",
+            "image",
+            "wore_on",
+            "note",
+            "shared_feed",
+            "user",
+        ]
+
+    def to_representation(self, instance):
+        ret = super().to_representation(instance)
+        # instance.image が存在する場合、Cloudinary の URL に差し替える
+        if instance.image:
+            # Cloudinaryのリサイズ用URLを手動で組み立てる
+            # instance.image.public_id は保存された画像のID（例: boot_logs/lvs4...）
+            url = cloudinary.utils.cloudinary_url(
+                instance.image.public_id,
+                width=800,
+                height=800,
+                crop="limit",
+                quality="auto",
+                fetch_format="auto",
+                secure=True,
+            )[0]  # [0]にURLが入っています
+
+            ret["image"] = url
+        return ret
+
+
 class PhotoUploadSerializer(serializers.ModelSerializer):
     image = serializers.ImageField(required=True, allow_null=False)
     user = serializers.ReadOnlyField(source="user.username")
@@ -71,7 +108,7 @@ class PhotoDetailSerializer(serializers.ModelSerializer):
 
 class ItemDetailSerializer(serializers.ModelSerializer):
     user = serializers.ReadOnlyField(source="user.username")
-    photos = PhotoDetailSerializer(many=True, read_only=True)
+    photos = PhotoSummarySerializer(many=True, read_only=True)
 
     class Meta:
         model = Item
