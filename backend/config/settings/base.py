@@ -15,13 +15,12 @@ from pathlib import Path
 import cloudinary
 import environ
 from corsheaders.defaults import default_headers
-import dj_database_url
-import os
 
-env = environ.Env(DEBUG=(bool, False))
+env = environ.Env()
+# env = environ.Env(DEBUG=(bool, False))
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 environ.Env.read_env(BASE_DIR / ".env")
 
@@ -30,9 +29,9 @@ environ.Env.read_env(BASE_DIR / ".env")
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 SECRET_KEY = env("SECRET_KEY")
-DEBUG = env("DEBUG")
+# DEBUG = env("DEBUG")
 # ALLOWED_HOSTS = ["*"]
-ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["*"])
+# ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["*"])
 
 # Application definition
 
@@ -52,15 +51,6 @@ INSTALLED_APPS = [
     "items",
 ]
 
-# 本番公開時は、特定のフロントエンドURLだけに絞りますが、
-# 開発中はどこからでも繋がるようにしておくとスムーズです。
-CORS_ALLOW_ALL_ORIGINS = True
-
-# もし特定のURL（例：Reactの3000番ポート）だけに絞る場合はこちら
-# CORS_ALLOWED_ORIGINS = [
-#     "http://localhost:3000",
-#     "http://127.0.0.1:3000",
-# ]
 
 # ブラウザからのリクエストで許可する非標準HTTPヘッダーのリスト。
 # JWTで使用するヘッダー"authorization"を含んでいる。
@@ -109,21 +99,6 @@ WSGI_APPLICATION = "config.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-DATABASES = {
-    "default": dj_database_url.config(
-        default=os.environ.get("DATABASE_URL"), conn_max_age=600
-    )
-}
-# DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.postgresql_psycopg2",
-#         "NAME": env("NAME"),
-#         "USER": env("USER"),
-#         "PASSWORD": env("PASSWORD"),
-#         "HOST": "db",  # compose.ymlで設定した名前
-#         "PORT": "5432",
-#     }
-# }
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators

@@ -3,6 +3,9 @@
   "dockerComposeFile": "compose.yml",
   "service": "backend",
   "workspaceFolder": "/home/user1/dev",
+  "containerEnv": {
+    "DJANGO_SETTINGS_MODULE": "config.settings.local"
+  },
   "remoteUser": "user1",
   "forwardPorts": [8000, 5173, 5432],
   "customizations": {
