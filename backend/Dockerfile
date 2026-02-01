@@ -24,4 +24,4 @@ COPY . .
 # collectstatic の実行
 # RUN SECRET_KEY=dummy DEBUG=False python manage.py collectstatic --noinput
 
-CMD ["gunicorn", "--bind", "0.0.0.0:8080", "config.wsgi:application"]
+CMD ["sh", "-c", "python manage.py migrate && gunicorn --bind 0.0.0.0:${PORT} config.wsgi:application"]
