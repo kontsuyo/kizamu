@@ -9,7 +9,7 @@ class Item(models.Model):
     id: int
     Type = models.TextChoices("ItemType", "Footwear")
     user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
+        settings.base.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name="items",
     )
@@ -33,7 +33,7 @@ class Photo(models.Model):
         on_delete=models.CASCADE,
         related_name="photos",
     )
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.base.AUTH_USER_MODEL, on_delete=models.CASCADE)
     image = CloudinaryField(
         "image",
         folder="item_logs/",
