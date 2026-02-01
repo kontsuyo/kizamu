@@ -21,7 +21,9 @@ RUN pip list
 
 COPY . .
 
+RUN DJANGO_SETTINGS_MODULE=config.settings.production
 # collectstatic の実行
+RUN python manage.py collectstatic --noinput
 # RUN SECRET_KEY=dummy DEBUG=False python manage.py collectstatic --noinput
 
 CMD ["sh", "-c", "python manage.py migrate && gunicorn --bind 0.0.0.0:${PORT} config.wsgi:application"]
