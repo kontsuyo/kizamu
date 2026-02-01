@@ -2,28 +2,26 @@
 
 FROM python:3.13-slim
 
+# システムの依存関係（念のため）
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
+
 WORKDIR /app
 
-# backend/requirements.txt をコピー
-COPY requirements.txt .
+# 先に pip 自体をアップグレード
 RUN pip install --upgrade pip
+
+# requirements.txt を確実にコピーしてインストール
+COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# backend フォルダ内をすべてコピー
+# ここで一度、インストールされたパッケージを確認するログを出す（デバッグ用）
+RUN pip list
+
 COPY . .
 
-# collectstatic を実行するときだけ、ダミーの環境変数を注入する
-# これで settings.py の読み込みエラーを回避します
-RUN DJANGO_SETTINGS_MODULE=config.settings \
-    SECRET_KEY=build-dummy \
-    DEBUG=False \
-    ALLOWED_HOSTS=* \
-    python manage.py collectstatic --noinput
+# collectstatic の実行
+# RUN SECRET_KEY=dummy DEBUG=False python manage.py collectstatic --noinput
 
-# 起動コマンド（ここではRailwayのVariablesが本物の値として注入されます）
-CMD ["gunicorn", "--bind", "0.0.0.0:${PORT}", "config.wsgi:application"]
-
-# RUN python manage.py collectstatic --noinput
-
-# # 起動コマンド
-# CMD ["gunicorn", "--bind", "0.0.0.0:8080", "config.wsgi:application"]
+CMD ["gunicorn", "--bind", "0.0.0.0:8080", "config.wsgi:application"]
