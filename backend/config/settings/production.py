@@ -10,6 +10,7 @@ DATABASES = {
         default=os.environ.get("DATABASE_URL"), conn_max_age=600
     )
 }
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # 本番DBやセキュリティ設定
 # SECURE_SSL_REDIRECT = True
