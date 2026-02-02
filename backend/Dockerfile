@@ -26,4 +26,4 @@ RUN DJANGO_SETTINGS_MODULE=config.settings.production
 # RUN python manage.py collectstatic --noinput
 # RUN SECRET_KEY=dummy DEBUG=False python manage.py collectstatic --noinput
 
-CMD ["sh", "-c", "python manage.py migrate && gunicorn --bind 0.0.0.0:${PORT} config.wsgi:application"]
+CMD ["sh", "-c", "python manage.py migrate && python manage.py collectstatic --noinput && gunicorn --bind 0.0.0.0:${PORT} config.wsgi:application"]
