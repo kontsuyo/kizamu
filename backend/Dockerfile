@@ -28,10 +28,6 @@ RUN DJANGO_SETTINGS_MODULE=config.settings.production
 
 # CMD ["sh", "-c", "python manage.py migrate && python manage.py collectstatic --noinput && gunicorn --bind 0.0.0.0:${PORT} config.wsgi:application"]
 # ここも 8080 に固定してしまう
-# CMD python manage.py migrate && \
-#     python manage.py collectstatic --noinput && \
-#     gunicorn --bind 0.0.0.0:8080 config.wsgi:application
 CMD python manage.py migrate && \
-    mkdir -p /app/staticfiles && \
     python manage.py collectstatic --noinput && \
     gunicorn --bind 0.0.0.0:8080 config.wsgi:application
