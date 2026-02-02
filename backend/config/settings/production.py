@@ -10,8 +10,14 @@ DATABASES = {
         default=os.environ.get("DATABASE_URL"), conn_max_age=600
     )
 }
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.WhiteNoiseStorage",
+    },
+}
 # 本番DBやセキュリティ設定
 # SECURE_SSL_REDIRECT = True
 # SESSION_COOKIE_SECURE = True
