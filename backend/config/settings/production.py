@@ -12,14 +12,10 @@ DATABASES = {
     )
 }
 
-# Vercelのドメインを許可リストに追加
-CORS_ALLOWED_ORIGINS = [
-    "https://aging-gallary.vercel.app",  # Vercelで発行されたURL
-]
-
-# DjangoのCSRF対策でもVercelを信用する
+# URLの信頼リスト
 CSRF_TRUSTED_ORIGINS = [
     "https://aging-gallary.vercel.app",
+    "https://backend-production-7724.up.railway.app",
 ]
 
 # cookieなど使う場合はTrue
@@ -28,3 +24,10 @@ CORS_ALLOW_CREDENTIALS = True
 # 本番DBやセキュリティ設定
 # SECURE_SSL_REDIRECT = True
 # SESSION_COOKIE_SECURE = True
+
+# プロキシ（Railway）が渡してくるヘッダーを解釈する
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
+# Cookieをセキュアにする（HTTPSのみで送信）
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
