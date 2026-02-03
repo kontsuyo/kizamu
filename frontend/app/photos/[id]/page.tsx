@@ -2,7 +2,8 @@ import type { Photo, PhotoPageProps } from "@/app/types";
 import Link from "next/link";
 
 async function fetchPhotoInfo(photoId: number): Promise<Photo | null> {
-  const url = `http://backend:8000/photos/${photoId}/`;
+  const url = `${process.env.NEXT_PUBLIC_API_URL}photos/${photoId}/`;
+  // const url = `http://backend:8000/photos/${photoId}/`;
   try {
     const response = await fetch(url);
     if (!response.ok) {

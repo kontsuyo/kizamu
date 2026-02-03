@@ -2,7 +2,8 @@ import Link from "next/link";
 import { Item, ItemPageProps, Photo } from "../../types";
 
 async function fetchItem(itemId: number): Promise<Item | null> {
-  const url = `http://backend:8000/items/${itemId}/`;
+  const url = `${process.env.NEXT_PUBLIC_API_URL}items/${itemId}/`;
+  // const url = `http://backend:8000/items/${itemId}/`;
   try {
     const response = await fetch(url);
     if (!response.ok) {
