@@ -22,12 +22,17 @@ RUN pip list
 COPY . .
 
 RUN DJANGO_SETTINGS_MODULE=config.settings.production
+
 # collectstatic の実行
 # RUN python manage.py collectstatic --noinput
 # RUN SECRET_KEY=dummy DEBUG=False python manage.py collectstatic --noinput
 
-# CMD ["sh", "-c", "python manage.py migrate && python manage.py collectstatic --noinput && gunicorn --bind 0.0.0.0:${PORT} config.wsgi:application"]
 # ここも 8080 に固定してしまう
+# CMD python manage.py migrate && \
+#     python manage.py collectstatic --noinput && \
+#     gunicorn --bind 0.0.0.0:8080 config.wsgi:application
+
+# 起動時に「adminがいなければ作る」という処理を1行でねじ込む
 CMD python manage.py migrate && \
-    python manage.py collectstatic --noinput && \
+    python manage.py shell -c "from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.filter(username='admin').exists() or User.objects.create_superuser('admin', 'admin@example.com', 'testpass123')" && \
     gunicorn --bind 0.0.0.0:8080 config.wsgi:application
