@@ -3,9 +3,8 @@ import { Item, ItemPageProps, Photo } from "../../types";
 
 async function fetchItem(itemId: number): Promise<Item | null> {
   const url = `${process.env.NEXT_PUBLIC_API_URL}items/${itemId}/`;
-  // const url = `http://backend:8000/items/${itemId}/`;
   try {
-    const response = await fetch(url);
+    const response = await fetch(url, { cache: "no-store" });
     if (!response.ok) {
       return null;
     }

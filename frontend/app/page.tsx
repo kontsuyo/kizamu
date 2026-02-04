@@ -3,10 +3,8 @@ import { Post, PaginatedResponse } from "./types";
 
 async function fetchPosts(): Promise<Post[]> {
   const url = `${process.env.NEXT_PUBLIC_API_URL}`;
-  // const url = "http://backend:8000/";
-  console.log(url);
   try {
-    const response = await fetch(url);
+    const response = await fetch(url, { cache: "no-store" });
     if (!response.ok) {
       return [];
     }

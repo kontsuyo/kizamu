@@ -3,9 +3,8 @@ import Link from "next/link";
 
 async function fetchUserItems(username: string): Promise<UserProfile | null> {
   const url = `${process.env.NEXT_PUBLIC_API_URL}users/${username}/`;
-  // const url = `http://backend:8000/users/${username}/`;
   try {
-    const response = await fetch(url);
+    const response = await fetch(url, { cache: "no-store" });
     if (!response.ok) {
       return null;
     }
