@@ -2,8 +2,7 @@ import Link from "next/link";
 import { Item, ItemPageProps, Photo } from "../../types";
 
 async function fetchItem(itemId: number): Promise<Item | null> {
-  const url = `${process.env.NEXT_PUBLIC_API_URL}items/${itemId}/`;
-  console.log("Fetching from: ", url);
+  const url = `${process.env.NEXT_PUBLIC_API_URL}/items/${itemId}/`;
   try {
     const response = await fetch(url, { cache: "no-store" });
     if (!response.ok) {

@@ -2,7 +2,7 @@ import type { ProfilePageProps, UserProfile } from "@/app/types";
 import Link from "next/link";
 
 async function fetchUserItems(username: string): Promise<UserProfile | null> {
-  const url = `${process.env.NEXT_PUBLIC_API_URL}users/${username}/`;
+  const url = `${process.env.NEXT_PUBLIC_API_URL}/users/${username}/`;
   try {
     const response = await fetch(url, { cache: "no-store" });
     if (!response.ok) {
