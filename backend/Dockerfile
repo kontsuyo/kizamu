@@ -32,7 +32,7 @@ ENV API_SECRET=dummy
 RUN python manage.py help
 
 # collectstatic の実行
-RUN python manage.py collectstatic --noinput
+RUN python manage.py collectstatic --noinput && ls -R /app/staticfiles
 
 # ここも 8080 に固定してしまう
 CMD python manage.py migrate && \
