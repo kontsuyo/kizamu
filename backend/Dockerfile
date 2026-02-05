@@ -26,7 +26,8 @@ ENV DJANGO_SETTINGS_MODULE=config.settings.production
 ENV SECRET_KEY=dummy-key-for-build-only
 ENV DEBUG=False
 
-# RUN DJANGO_SETTINGS_MODULE=config.settings.production
+# デバッグ用：設定モジュールを表示させてみる
+RUN python -c "import os; print('Settings:', os.environ.get('DJANGO_SETTINGS_MODULE'))"
 
 # collectstatic の実行
 RUN python manage.py collectstatic --noinput
