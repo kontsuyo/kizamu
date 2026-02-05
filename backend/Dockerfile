@@ -16,9 +16,6 @@ RUN pip install --upgrade pip
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# ここで一度、インストールされたパッケージを確認するログを出す（デバッグ用）
-RUN pip list
-
 COPY . .
 
 # ビルド時のみ必要なダミー値を環境変数として設定
@@ -26,8 +23,8 @@ ENV DJANGO_SETTINGS_MODULE=config.settings.production
 ENV SECRET_KEY=dummy-key-for-build-only
 ENV DEBUG=False
 
-# デバッグ用：設定モジュールを表示させてみる
-RUN python -c "import os; print('Settings:', os.environ.get('DJANGO_SETTINGS_MODULE'))"
+# インストールされているコマンド一覧に collectstatic があるか確認
+RUN python manage.py help
 
 # collectstatic の実行
 RUN python manage.py collectstatic --noinput
