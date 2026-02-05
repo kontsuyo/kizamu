@@ -26,6 +26,7 @@ ENV DEBUG=False
 # インストールされているコマンド一覧に collectstatic があるか確認
 RUN python manage.py help
 
+
 # collectstatic の実行
 RUN python manage.py collectstatic --noinput
 
