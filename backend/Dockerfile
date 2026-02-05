@@ -25,8 +25,8 @@ ENV DEBUG=False
 
 # Cloudinaryなどの外部サービス用ダミー変数
 ENV CLOUD_NAME=dummy
-ENV CLOUD_API_KEY=dummy
-ENV CLOUD_API_SECRET=dummy
+ENV API_KEY=dummy
+ENV API_SECRET=dummy
 
 # インストールされているコマンド一覧に collectstatic があるか確認
 RUN python manage.py help
