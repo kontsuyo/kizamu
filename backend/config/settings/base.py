@@ -168,6 +168,9 @@ STORAGES = {
     },
 }
 
+# リンク切れがあっても無視してビルドを続行させます
+WHITENOISE_MANIFEST_STRICT = False
+
 CLOUDINARY_STORAGE = {
     "CLOUD_NAME": env("CLOUD_NAME"),
     "API_KEY": env("API_KEY"),
