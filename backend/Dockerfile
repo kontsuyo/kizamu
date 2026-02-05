@@ -23,9 +23,13 @@ ENV DJANGO_SETTINGS_MODULE=config.settings.production
 ENV SECRET_KEY=dummy-key-for-build-only
 ENV DEBUG=False
 
+# Cloudinaryなどの外部サービス用ダミー変数
+ENV CLOUD_NAME=dummy
+ENV CLOUD_API_KEY=dummy
+ENV CLOUD_API_SECRET=dummy
+
 # インストールされているコマンド一覧に collectstatic があるか確認
 RUN python manage.py help
-
 
 # collectstatic の実行
 RUN python manage.py collectstatic --noinput
