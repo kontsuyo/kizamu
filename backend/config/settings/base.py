@@ -47,9 +47,19 @@ INSTALLED_APPS = [
     "corsheaders",
     "rest_framework",
     "rest_framework_simplejwt",
+    "rest_framework.authtoken",  # トークン認証に必要
+    "dj_rest_auth",
+    "dj_rest_auth.registration",  # ユーザー登録に必要
+    "django.contrib.sites",  # allauthに必要
+    "allauth",
+    "allauth.account",
+    "allauth.socialaccount",  # 将来的にSNSログインする場合
     "accounts",
     "items",
 ]
+
+# django.contrib.sites 用の設定（通常 1 でOK）
+SITE_ID = 1
 
 
 # ブラウザからのリクエストで許可する非標準HTTPヘッダーのリスト。
@@ -63,6 +73,14 @@ REST_FRAMEWORK = {
     )
 }
 
+# JWTの使用を有効にする
+REST_USE_JWT = True
+
+# JWTの有効期限などの詳細設定（必要に応じて）
+SIMPLE_JWT = {
+    "AUTH_HEADER_TYPES": ("Bearer",),
+}
+
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -74,6 +92,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "allauth.account.middleware.AccountMiddleware",
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -202,3 +221,10 @@ LOGGING = {
         },
     },
 }
+
+AUTHENTICATION_BACKENDS = [
+    # Django標準の認証（管理画面などで使用）
+    "django.contrib.auth.backends.ModelBackend",
+    # allauth固有の認証（メールアドレスでのログインなどに必要）
+    "allauth.account.auth_backends.AuthenticationBackend",
+]
