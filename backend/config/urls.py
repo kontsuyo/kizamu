@@ -28,10 +28,15 @@ from .api import api_root
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("", include("items.urls")),
-    path("api-auth/", include("rest_framework.urls")),
-    path("accounts/", include("accounts.urls")),
+    path(
+        "api-auth/", include("rest_framework.urls")
+    ),  # ログイン・ログアウト・パスワード変更
+    path(
+        "api/auth/registration/", include("dj_rest_auth.registration.urls")
+    ),  # ユーザー登録
     path("api_root/", api_root, name="api-root"),
     path("api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
+    path("", include("items.urls")),
+    path("accounts/", include("accounts.urls")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
