@@ -1,8 +1,7 @@
 from cloudinary.models import CloudinaryField  # 追加
+from config import settings
 from django.db import models
 from django.utils import timezone
-
-from config import settings
 
 
 class Item(models.Model):
@@ -23,7 +22,7 @@ class Item(models.Model):
         ordering = ["-created_at"]
 
     def __str__(self):
-        return f"{self.brand} {self.model_name}"
+        return f"{self.user.username}'s {self.brand} {self.model_name}"
 
 
 class Photo(models.Model):
@@ -49,4 +48,4 @@ class Photo(models.Model):
         ordering = ["-wore_on"]
 
     def __str__(self):
-        return f"Log for {self.item} at {self.created_at}"
+        return f"Photo for {self.item} at {self.created_at}"
