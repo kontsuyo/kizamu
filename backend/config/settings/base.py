@@ -164,7 +164,10 @@ STORAGES = {
         "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
     },
     "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+        # 'CompressedManifestStaticFilesStorage' から
+        # 'CompressedStaticFilesStorage' に変更します。
+        # これにより、パスの厳密なチェック（ハッシュ化）をスキップしつつ、圧縮配信だけ行います。
+        "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
     },
 }
 
