@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
+    "whitenoise.runserver_nostatic",
     "django.contrib.staticfiles",
     "cloudinary_storage",
     "cloudinary",
@@ -164,9 +165,6 @@ STORAGES = {
         "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
     },
     "staticfiles": {
-        # 'CompressedManifestStaticFilesStorage' から
-        # 'CompressedStaticFilesStorage' に変更します。
-        # これにより、パスの厳密なチェック（ハッシュ化）をスキップしつつ、圧縮配信だけ行います。
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
     },
 }
