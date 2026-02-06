@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "cloudinary_storage",
     "cloudinary",
     "corsheaders",
     "rest_framework",
@@ -167,12 +168,12 @@ STORAGES = {
         # 'CompressedManifestStaticFilesStorage' から
         # 'CompressedStaticFilesStorage' に変更します。
         # これにより、パスの厳密なチェック（ハッシュ化）をスキップしつつ、圧縮配信だけ行います。
-        "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
     },
 }
 
 # リンク切れがあっても無視してビルドを続行させます
-WHITENOISE_MANIFEST_STRICT = False
+# WHITENOISE_MANIFEST_STRICT = False
 
 CLOUDINARY_STORAGE = {
     "CLOUD_NAME": env("CLOUD_NAME"),
