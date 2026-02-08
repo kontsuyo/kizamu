@@ -17,7 +17,6 @@ import environ
 from corsheaders.defaults import default_headers
 
 env = environ.Env()
-# env = environ.Env(DEBUG=(bool, False))
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
@@ -29,12 +28,8 @@ environ.Env.read_env(BASE_DIR / ".env")
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 SECRET_KEY = env("SECRET_KEY")
-# DEBUG = env("DEBUG")
-# ALLOWED_HOSTS = ["*"]
-# ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["*"])
 
 # Application definition
-
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -61,7 +56,6 @@ INSTALLED_APPS = [
 
 # django.contrib.sites 用の設定（通常 1 でOK）
 SITE_ID = 1
-
 
 # ブラウザからのリクエストで許可する非標準HTTPヘッダーのリスト。
 # JWTで使用するヘッダー"authorization"を含んでいる。
@@ -173,9 +167,6 @@ STORAGES = {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
     },
 }
-
-# リンク切れがあっても無視してビルドを続行させます
-# WHITENOISE_MANIFEST_STRICT = False
 
 CLOUDINARY_STORAGE = {
     "CLOUD_NAME": env("CLOUD_NAME"),
