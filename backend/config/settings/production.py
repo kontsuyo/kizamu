@@ -5,7 +5,9 @@ import dj_database_url
 from .base import *
 
 DEBUG = False
+
 ALLOWED_HOSTS = ["*"]
+
 DATABASES = {
     "default": dj_database_url.config(
         default=os.environ.get("DATABASE_URL"), conn_max_age=600
@@ -14,6 +16,12 @@ DATABASES = {
 
 # URLの信頼リスト
 CSRF_TRUSTED_ORIGINS = [
+    "https://aging-gallary.vercel.app",
+    "https://backend-production-7724.up.railway.app",
+]
+
+# もし特定のURL（例：Reactの3000番ポート）だけに絞る場合はこちら
+CORS_ALLOWED_ORIGINS = [
     "https://aging-gallary.vercel.app",
     "https://backend-production-7724.up.railway.app",
 ]
