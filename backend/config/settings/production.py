@@ -6,7 +6,10 @@ from .base import *
 
 DEBUG = False
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = [
+    "backend-production-7724.up.railway.app",
+    "aging-gallary.vercel.app",  # フロントエンドからのアクセス用
+]
 
 DATABASES = {
     "default": dj_database_url.config(
