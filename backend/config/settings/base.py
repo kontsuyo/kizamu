@@ -199,38 +199,6 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 AUTH_USER_MODEL = "accounts.CustomUser"
 
 
-# ログディレクトリの作成
-log_dir = BASE_DIR / "log"
-log_dir.mkdir(parents=True, exist_ok=True)
-
-LOGGING = {
-    "version": 1,
-    "disable_existing_loggers": False,
-    "handlers": {
-        "file": {
-            "level": "DEBUG",
-            "class": "logging.handlers.RotatingFileHandler",
-            "filename": log_dir / "debug.log",
-            "maxBytes": 1024 * 1024 * 5,  # 5MB
-            "backupCount": 3,  # バックアップファイルの個数
-            "formatter": "verbose",
-        },
-    },
-    "formatters": {
-        "verbose": {
-            "format": "{levelname} {asctime} {module} {message}",
-            "style": "{",
-        },
-    },
-    "loggers": {
-        "django": {
-            "handlers": ["file"],
-            "level": "DEBUG",
-            "propagate": True,
-        },
-    },
-}
-
 AUTHENTICATION_BACKENDS = [
     # Django標準の認証（管理画面などで使用）
     "django.contrib.auth.backends.ModelBackend",
