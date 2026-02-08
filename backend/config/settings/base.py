@@ -232,3 +232,10 @@ AUTHENTICATION_BACKENDS = [
     # allauth固有の認証（メールアドレスでのログインなどに必要）
     "allauth.account.auth_backends.AuthenticationBackend",
 ]
+
+# 実際にメールを送らずに、コンソールに表示する設定（開発・テスト用）
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
+# ユーザー登録時にメール認証を必須にしない設定
+ACCOUNT_EMAIL_VERIFICATION = "none"
+ACCOUNT_EMAIL_REQUIRED = True  # メールアドレスの入力を必須にするかどうか
