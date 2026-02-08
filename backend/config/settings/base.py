@@ -74,8 +74,13 @@ REST_FRAMEWORK = {
     )
 }
 
-# JWTの使用を有効にする
-REST_USE_JWT = True
+# JWTのレスポンスにトークンを含めるための設定
+REST_AUTH = {
+    "USE_JWT": True,
+    "JWT_AUTH_COOKIE": "my-app-auth",  # クッキー名（任意）
+    "JWT_AUTH_REFRESH_COOKIE": "my-refresh-token",
+    "JWT_AUTH_HTTPONLY": False,  # 開発中はFalseにするとデバッグしやすいです
+}
 
 # JWTの有効期限などの詳細設定（必要に応じて）
 SIMPLE_JWT = {
