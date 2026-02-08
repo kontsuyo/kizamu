@@ -16,12 +16,6 @@ DATABASES = {
 # 開発中はどこからでも繋がるようにしておくとスムーズです。
 CORS_ALLOW_ALL_ORIGINS = True
 
-# もし特定のURL（例：Reactの3000番ポート）だけに絞る場合はこちら
-# CORS_ALLOWED_ORIGINS = [
-#     "http://localhost:3000",
-#     "http://127.0.0.1:3000",
-# ]
-
 # ログディレクトリの作成
 log_dir = BASE_DIR / "log"
 log_dir.mkdir(parents=True, exist_ok=True)
