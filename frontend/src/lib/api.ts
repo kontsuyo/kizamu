@@ -1,9 +1,8 @@
 export const getApiUrl = () => {
-  // ブラウザ（Client Side）で実行されている場合
   if (typeof window !== "undefined") {
-    return process.env.NEXT_PUBLIC_API_URL;
+    // ブラウザからリクエストを飛ばす場合（localhost:8000）
+    return process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
   }
-  // サーバーサイド（SSR/App RouterのServer Component）で実行されている場合
-  // サーバーサイド用変数がなければ、フロント用をフォールバックにする
-  return process.env.INTERNAL_API_URL || process.env.NEXT_PUBLIC_API_URL;
+  // サーバーサイド（Dockerコンテナ間など）から飛ばす場合（backend:8000）
+  return process.env.INTERNAL_API_URL || "http://backend:8000";
 };
