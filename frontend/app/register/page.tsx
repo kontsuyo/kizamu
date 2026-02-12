@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 
+import Cookies from "js-cookie";
 import { getApiUrl } from "@/src/lib/api";
 
 interface Form {
@@ -61,9 +62,25 @@ export default function RegisterPage() {
       if (!response.ok) {
         return null;
       }
-      const result = await response.json();
-      console.log(result);
-      return result;
+      const data = await response.json();
+      if (response.ok) {
+        // トークンをCookieに保存（有効期限はとりあえず１日に設定)
+        Cookies.set("access_token", data.access, {
+          expires: 1,
+          secure: true,
+          sameSite: "Lax",
+        });
+        Cookies.set("refresh_token", data.refresh, {
+          expires: 7,
+          secure: true,
+          sameSite: "Lax",
+        });
+        console.log("登録と保存に成功！");
+        // ログイン後のページへリダイレクト
+        window.location.href = `/users/${formData.username}`;
+      } else {
+        console.error("エラーレスポンス：", data);
+      }
     } catch (error) {
       console.error("ユーザー登録エラー：", error);
       return null;
