@@ -77,7 +77,7 @@ export default function RegisterPage() {
         });
         console.log("登録と保存に成功！");
         // ログイン後のページへリダイレクト
-        window.location.href = `/users/${formData.username}`;
+        window.location.href = `/profile`;
       } else {
         console.error("エラーレスポンス：", data);
       }
