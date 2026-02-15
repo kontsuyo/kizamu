@@ -29,7 +29,7 @@ from .api import api_root
 urlpatterns = [
     path("admin/", admin.site.urls),
     path(
-        "api-auth/", include("rest_framework.urls")
+        "api/auth/", include("dj_rest_auth.urls")
     ),  # ログイン・ログアウト・パスワード変更
     path(
         "api/auth/registration/", include("dj_rest_auth.registration.urls")
