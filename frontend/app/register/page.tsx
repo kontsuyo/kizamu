@@ -3,6 +3,7 @@ import { useState } from "react";
 
 import Cookies from "js-cookie";
 import { getApiUrl } from "@/src/lib/api";
+import { useRouter } from "next/navigation";
 
 interface Form {
   username: string;
@@ -18,6 +19,8 @@ export default function RegisterPage() {
     password1: "",
     password2: "",
   });
+
+  const router = useRouter();
 
   function handleUserNameChange(e: React.ChangeEvent<HTMLInputElement>) {
     setFormData({
@@ -77,7 +80,8 @@ export default function RegisterPage() {
         });
         console.log("登録と保存に成功！");
         // ログイン後のページへリダイレクト
-        window.location.href = `/profile`;
+        // window.location.href = `/profile`;
+        router.push("/login");
       } else {
         console.error("エラーレスポンス：", data);
       }
