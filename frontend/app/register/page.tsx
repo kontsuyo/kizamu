@@ -22,34 +22,6 @@ export default function RegisterPage() {
 
   const router = useRouter();
 
-  function handleUserNameChange(e: React.ChangeEvent<HTMLInputElement>) {
-    setFormData({
-      ...formData,
-      username: e.target.value,
-    });
-  }
-
-  function handleEmailChange(e: React.ChangeEvent<HTMLInputElement>) {
-    setFormData({
-      ...formData,
-      email: e.target.value,
-    });
-  }
-
-  function handlePasswordChange(e: React.ChangeEvent<HTMLInputElement>) {
-    setFormData({
-      ...formData,
-      password1: e.target.value,
-    });
-  }
-
-  function handleConfirmPasswordChange(e: React.ChangeEvent<HTMLInputElement>) {
-    setFormData({
-      ...formData,
-      password2: e.target.value,
-    });
-  }
-
   async function handleRegister(e: React.FormEvent) {
     e.preventDefault();
     const baseUrl = getApiUrl();
@@ -90,7 +62,9 @@ export default function RegisterPage() {
             name="username"
             id="username"
             value={formData.username}
-            onChange={handleUserNameChange}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              setFormData({ ...formData, username: e.target.value });
+            }}
             required
           />
         </div>
@@ -101,7 +75,9 @@ export default function RegisterPage() {
             name="email"
             id="email"
             value={formData.email}
-            onChange={handleEmailChange}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              setFormData({ ...formData, email: e.target.value });
+            }}
             required
           />
         </div>
@@ -112,7 +88,9 @@ export default function RegisterPage() {
             name="password1"
             id="password1"
             value={formData.password1}
-            onChange={handlePasswordChange}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              setFormData({ ...formData, password1: e.target.value });
+            }}
             required
           />
         </div>
@@ -123,7 +101,9 @@ export default function RegisterPage() {
             name="password2"
             id="password2"
             value={formData.password2}
-            onChange={handleConfirmPasswordChange}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setFormData({ ...formData, password2: e.target.value })
+            }
             required
           />
         </div>
