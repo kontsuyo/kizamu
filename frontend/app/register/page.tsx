@@ -67,20 +67,8 @@ export default function RegisterPage() {
       }
       const data = await response.json();
       if (response.ok) {
-        // トークンをCookieに保存（有効期限はとりあえず１日に設定)
-        Cookies.set("access_token", data.access, {
-          expires: 1,
-          secure: true,
-          sameSite: "Lax",
-        });
-        Cookies.set("refresh_token", data.refresh, {
-          expires: 7,
-          secure: true,
-          sameSite: "Lax",
-        });
         console.log("登録と保存に成功！");
         // ログイン後のページへリダイレクト
-        // window.location.href = `/profile`;
         router.push("/login");
       } else {
         console.error("エラーレスポンス：", data);
