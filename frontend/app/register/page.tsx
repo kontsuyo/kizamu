@@ -107,10 +107,6 @@ export default function RegisterPage() {
             required
           />
         </div>
-        <p>
-          {formData.username} {formData.email} {formData.password1}{" "}
-          {formData.password2}
-        </p>
         <div>
           <button type="submit">登録する</button>
         </div>
