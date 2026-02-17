@@ -27,7 +27,7 @@ export default function LoginPage() {
         Cookies.set("refresh_token", data.refresh, { expires: 7 });
 
         console.log("ログイン成功");
-        router.push(`/items/${username}`);
+        router.push(`/users/${username}`);
       } else {
         alert("ログインに失敗しました。ユーザー名かパスワードが違います。");
       }
