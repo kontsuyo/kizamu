@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 from .base import *
 
 DEBUG = True
@@ -15,6 +17,13 @@ DATABASES = {
 # 本番公開時は、特定のフロントエンドURLだけに絞りますが、
 # 開発中はどこからでも繋がるようにしておくとスムーズです。
 CORS_ALLOW_ALL_ORIGINS = True
+
+# JWTの有効期限などの詳細設定（必要に応じて）
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=1),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
+    "AUTH_HEADER_TYPES": ("Bearer",),
+}
 
 # ログディレクトリの作成
 log_dir = BASE_DIR / "log"
