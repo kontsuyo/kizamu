@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
-from rest_framework import generics, permissions
+from rest_framework import generics, permissions, status
 from rest_framework.pagination import CursorPagination
+from rest_framework.response import Response
 
 from items.models import Item, Photo
 from items.permissions import IsOwnerOrReadOnly
@@ -29,6 +30,19 @@ class ItemCreate(generics.CreateAPIView):
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
+    def create(self, request, *args, **kwargs):
+        # 通常の保存処理
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+
+        # ユーザー名を追加してレスポンスを作成
+        response_data = serializer.data
+        response_data["username"] = request.user.username
+
+        headers = self.get_success_headers(serializer.data)
+        return Response(response_data, status=status.HTTP_201_CREATED, headers=headers)
 
 
 class ItemDetail(generics.RetrieveUpdateDestroyAPIView):
