@@ -64,7 +64,8 @@ CORS_ALLOW_HEADERS = (*default_headers,)
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
-        "rest_framework_simplejwt.authentication.JWTAuthentication",
+        "rest_framework_simplejwt.authentication.JWTAuthentication", # Next.js用
+        'rest_framework.authentication.SessionAuthentication', # ブラウザブルAPI用
     )
 }
 

@@ -28,6 +28,7 @@ from .api import api_root
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path("drf-auth/", include("rest_framework.urls")),
     path(
         "api/auth/", include("dj_rest_auth.urls")
     ),  # ログイン・ログアウト・パスワード変更
