@@ -146,7 +146,8 @@ class ItemCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Item
-        fields = ["user", "_type", "brand", "model_name", "leather"]
+        fields = ["user", "brand", "model_name"]
+        # fields = ["user", "_type", "brand", "model_name", "leather"]
 
 
 class FeedSerializer(serializers.ModelSerializer):
